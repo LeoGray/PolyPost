@@ -58,8 +58,8 @@ export const Sidebar: React.FC = () => {
         <aside className="w-56 h-full bg-bg-primary border-r border-border-primary flex flex-col">
             {/* Logo */}
             <div className="h-16 px-4 border-b border-border-primary flex items-center gap-2">
-                <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">P</span>
+                <div className="w-8 h-8 flex items-center justify-center overflow-hidden rounded-lg">
+                    <img src="/icons/icon48.png" alt="PolyPost Logo" className="w-full h-full object-cover" />
                 </div>
                 <span className="text-text-primary font-semibold text-lg">{t('app.name')}</span>
             </div>

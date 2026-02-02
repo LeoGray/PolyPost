@@ -16,8 +16,8 @@ const Popup: React.FC = () => {
         <div className="w-72 p-4 bg-bg-primary">
             {/* Logo */}
             <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">P</span>
+                <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-xl">
+                    <img src="/icons/icon128.png" alt="PolyPost Logo" className="w-full h-full object-cover" />
                 </div>
                 <div>
                     <h1 className="text-text-primary font-semibold text-lg">PolyPost</h1>
