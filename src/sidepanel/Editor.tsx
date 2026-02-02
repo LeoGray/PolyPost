@@ -40,27 +40,6 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
     const [error, setError] = useState<string | null>(null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-    // Helper to get active AI settings
-    const getAiSettings = () => {
-        if (provider === 'custom') {
-            return {
-                apiKey: customApiKey,
-                baseURL: customApiUrl,
-                errorMsg: t('editor.save_error'), // Reusing save error or create a specific one if needed, but for now using generic config error msg which was hardcoded
-            };
-        }
-        return {
-            apiKey: openaiApiKey,
-            baseURL: undefined,
-            errorMsg: t('settings.apikey.help'), // This might not be exact match for previous "Please configure...", using settings help or should I add a specific key?
-            // Actually the original was "Please configure your ... in Settings"
-            // Let's use the hardcoded string from before but localized if I added it? 
-            // I didn't add specific config error keys. Let's use a generic error for now or add them.
-            // Wait, I missed adding explicit keys for "Please configure your...".
-            // I will use 'editor.save_error' for now as a placeholder or just use the localized check below.
-        };
-    };
-
     // Fix: Redefine getAiSettings to use explicit checks inside handlers or just simple strings if not added to locale
     // The previous implementation returned an object with errorMsg. 
     // I haven't added keys for "Please configure your OpenAI API key in Settings".

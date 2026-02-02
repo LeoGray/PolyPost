@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Pencil, Trash2, X, Save, AlertCircle, MoreHorizontal, Check } from 'lucide-react';
 import { useSettingsStore, useUIStore } from '@/store';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation, type DictionaryKey } from '@/hooks/useTranslation';
 import { Card, Button, Badge } from '@/components/ui';
 import type { PolishPrompt } from '@/types';
 
@@ -13,7 +13,7 @@ const PromptCard: React.FC<{
     onEdit: (prompt: PolishPrompt) => void;
     onDelete: (id: string) => void;
     canDelete: boolean;
-    t: (key: string) => string;
+    t: (key: DictionaryKey, ...args: (string | number)[]) => string;
 }> = ({ prompt, isDefault, onSetDefault, onEdit, onDelete, canDelete, t }) => {
     const [showMenu, setShowMenu] = useState(false);
 
@@ -96,7 +96,7 @@ const PromptListItem: React.FC<{
     onEdit: (prompt: PolishPrompt) => void;
     onDelete: (id: string) => void;
     canDelete: boolean;
-    t: (key: string) => string;
+    t: (key: DictionaryKey, ...args: (string | number)[]) => string;
 }> = ({ prompt, isDefault, onSetDefault, onEdit, onDelete, canDelete, t }) => {
     const [showMenu, setShowMenu] = useState(false);
 

@@ -5,7 +5,7 @@ import { zh } from '@/i18n/locales/zh';
 // Define the type for the dictionary based on the 'en' locale
 // This ensures type safety for keys
 type Dictionary = typeof en;
-type DictionaryKey = keyof Dictionary;
+export type DictionaryKey = keyof Dictionary;
 
 const dictionaries: Record<'en' | 'zh', Dictionary> = {
     en,

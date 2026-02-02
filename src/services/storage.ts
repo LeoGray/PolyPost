@@ -138,9 +138,14 @@ export const storage = {
             const result = await chrome.storage.sync.get(STORAGE_KEYS.SETTINGS);
             return result[STORAGE_KEYS.SETTINGS] || {
                 openaiApiKey: '',
+                provider: 'openai',
+                customApiUrl: '',
+                customApiKey: '',
                 defaultLanguage: 'en',
                 defaultPolishTemplate: 'professional',
                 theme: 'dark',
+                uiLanguage: 'en',
+                prompts: [],
             };
         }
 
@@ -148,9 +153,14 @@ export const storage = {
         const stored = localStorage.getItem(STORAGE_KEYS.SETTINGS);
         return stored ? JSON.parse(stored) : {
             openaiApiKey: '',
+            provider: 'openai',
+            customApiUrl: '',
+            customApiKey: '',
             defaultLanguage: 'en',
             defaultPolishTemplate: 'professional',
             theme: 'dark',
+            uiLanguage: 'en',
+            prompts: [],
         };
     },
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MoreHorizontal, FolderInput, Trash2 } from 'lucide-react';
 import { Card, Badge, Modal, Button } from '@/components/ui';
-import type { Post, Variant, Folder } from '@/types';
+import type { Post, Variant } from '@/types';
 import { truncateText, formatRelativeTime } from '@/utils';
 import { LANGUAGE_CODES } from '@/types';
 import { useFoldersStore, usePostsStore } from '@/store';
@@ -102,7 +102,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, variants, onClick }) =
                             <Badge
                                 variant="tag"
                                 className="text-xs"
-                                style={{ backgroundColor: `${currentFolder.color}20`, color: currentFolder.color }}
+                                color={currentFolder.color}
                             >
                                 {currentFolder.name}
                             </Badge>

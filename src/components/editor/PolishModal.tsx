@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Modal, Button } from '@/components/ui';
-import type { PolishTemplate } from '@/types';
 import { useSettingsStore } from '@/store';
 import { Sparkles, Briefcase, Flame, Coffee, Cpu, Smile, Zap, PenTool } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
