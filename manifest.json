@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "PolyPost",
-  "description": "AI-powered social media content creation with polishing, translation, and variant management",
+  "name": "PolyPost — for Twitter/X",
+  "description": "Create, polish, translate, and manage X (Twitter) post variants in a side panel.",
   "version": "1.0.0",
   "icons": {
     "16": "icons/icon16.png",
