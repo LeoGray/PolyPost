@@ -71,3 +71,7 @@ npm run preview
 ## 许可
 
 MIT
+
+## 隐私政策
+
+[隐私政策](privacy_zh.md)

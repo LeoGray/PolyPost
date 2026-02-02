@@ -71,3 +71,7 @@ PRs and suggestions are welcome. Please follow:
 ## License
 
 MIT
+
+## Privacy Policy
+
+[Privacy Policy](privacy.md)
