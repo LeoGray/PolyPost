@@ -1,10 +1,10 @@
 import React from 'react';
-import { Sparkles, Globe, Plus, ArrowRight, Trash2 } from 'lucide-react';
+import { Sparkles, Globe, Plus, Trash2, Copy } from 'lucide-react';
 import { Card, Badge, Button } from '@/components/ui';
 import type { Variant } from '@/types';
 import { POLISH_TEMPLATE_NAMES, LANGUAGE_NAMES } from '@/types';
-import { truncateText } from '@/utils';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useSettingsStore } from '@/store';
 
 interface VariantsPanelProps {
     variants: Variant[];
@@ -22,10 +22,18 @@ export const VariantsPanel: React.FC<VariantsPanelProps> = ({
     isGenerating = false,
 }) => {
     const { t } = useTranslation();
+    const { prompts } = useSettingsStore();
+
+    const getPromptName = (templateId?: string | null) => {
+        if (!templateId) return 'Variant';
+        const prompt = prompts.find((item) => item.id === templateId);
+        if (prompt?.name) return prompt.name;
+        return POLISH_TEMPLATE_NAMES[templateId as keyof typeof POLISH_TEMPLATE_NAMES] || templateId;
+    };
 
     const getVariantLabel = (variant: Variant) => {
         if (variant.type === 'polish' && variant.promptTemplate) {
-            return POLISH_TEMPLATE_NAMES[variant.promptTemplate];
+            return getPromptName(variant.promptTemplate);
         }
         if (variant.type === 'translation' && variant.language) {
             return LANGUAGE_NAMES[variant.language];
@@ -62,6 +70,29 @@ export const VariantsPanel: React.FC<VariantsPanelProps> = ({
         }
     };
 
+    const handleCopy = async (content: string) => {
+        if (!navigator?.clipboard?.writeText) {
+            console.warn('Clipboard API is not available.');
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(content);
+        } catch (error) {
+            console.error('Failed to copy variant content:', error);
+        }
+    };
+
+    const getVariantFooter = (variant: Variant) => {
+        if (variant.type === 'polish') {
+            return t('editor.variants.polished');
+        }
+        if (variant.type === 'translation') {
+            return t('editor.variants.translated');
+        }
+        return variant.description;
+    };
+
     return (
         <div className="flex flex-col h-full">
             {/* Header */}
@@ -70,13 +101,10 @@ export const VariantsPanel: React.FC<VariantsPanelProps> = ({
                     <h2 className="text-lg font-semibold text-text-primary">{t('editor.variants')}</h2>
                     <span className="text-sm text-text-muted">{variants.length}</span>
                 </div>
-                {variants.length > 0 && (
-                    <button className="text-sm text-accent hover:underline">{t('editor.variants.view_all')}</button>
-                )}
             </div>
 
             {/* Variants list */}
-            <div className="flex-1 overflow-y-auto space-y-3">
+            <div className="flex-1 overflow-y-auto overflow-x-visible space-y-3 p-1">
                 {variants.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
                         <div className="w-16 h-16 rounded-full bg-bg-tertiary flex items-center justify-center mb-4">
@@ -93,6 +121,8 @@ export const VariantsPanel: React.FC<VariantsPanelProps> = ({
                             key={variant.id}
                             className={`p-4 ${variant.isSelected ? 'ring-2 ring-accent' : ''
                                 }`}
+                            onClick={() => onSelectVariant(variant.id)}
+                            hoverable
                         >
                             {/* Variant header */}
                             <div className="flex items-center justify-between gap-2 mb-2">
@@ -100,35 +130,40 @@ export const VariantsPanel: React.FC<VariantsPanelProps> = ({
                                     {getVariantIcon(variant)}
                                     {getVariantLabel(variant)}
                                 </Badge>
-                                <button
-                                    onClick={() => onDeleteVariant(variant.id)}
-                                    className="p-1 rounded hover:bg-bg-tertiary text-text-muted hover:text-red-400"
-                                    aria-label={t('actions.delete')}
-                                    title={t('actions.delete')}
-                                >
-                                    <Trash2 size={14} />
-                                </button>
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            handleCopy(variant.content);
+                                        }}
+                                        className="p-1 rounded hover:bg-bg-tertiary text-text-muted hover:text-text-primary"
+                                        aria-label={t('actions.copy')}
+                                        title={t('actions.copy')}
+                                    >
+                                        <Copy size={14} />
+                                    </button>
+                                    <button
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            onDeleteVariant(variant.id);
+                                        }}
+                                        className="p-1 rounded hover:bg-bg-tertiary text-text-muted hover:text-red-400"
+                                        aria-label={t('actions.delete')}
+                                        title={t('actions.delete')}
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Content preview */}
-                            <p className="text-sm text-text-primary leading-relaxed mb-3">
-                                {truncateText(variant.content, 150)}
+                            <p className="text-sm text-text-primary leading-relaxed mb-3 whitespace-pre-wrap break-words">
+                                {variant.content}
                             </p>
 
                             {/* Footer */}
-                            <div className="flex items-center justify-between">
-                                <span className="text-xs text-text-muted">
-                                    {variant.description}
-                                </span>
-                                <button
-                                    onClick={() => onSelectVariant(variant.id)}
-                                    className="flex items-center gap-1 text-xs text-accent hover:underline whitespace-nowrap"
-                                >
-                                    <span className="relative top-px">
-                                        {t('editor.variants.use_this')}
-                                    </span>
-                                    <ArrowRight size={14} />
-                                </button>
+                            <div className="text-xs text-text-muted">
+                                {getVariantFooter(variant)}
                             </div>
                         </Card>
                     ))

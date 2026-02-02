@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ArrowLeft, Save, Send } from 'lucide-react';
 import { Button } from '@/components/ui';
 import {
@@ -8,9 +8,11 @@ import {
     TranslateModal,
 } from '@/components/editor';
 import { usePostsStore, useSettingsStore, useUIStore } from '@/store';
-import { aiService } from '@/services/ai';
+import { aiService, DEFAULT_OPENAI_BASE_URL } from '@/services/ai';
+import { ensureHostPermission } from '@/services/permissions';
 import { twitterService } from '@/services/twitter';
 import type { PolishTemplate, Language } from '@/types';
+import { LANGUAGE_NAMES, POLISH_TEMPLATE_NAMES } from '@/types';
 import { useTranslation } from '@/hooks/useTranslation';
 
 interface EditorProps {
@@ -22,7 +24,7 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
     const { currentPostId, getPostById, updatePost, addVariant, selectVariant, deleteVariant } =
         usePostsStore();
     const variants = usePostsStore((s) => s.getVariantsByPostId(currentPostId || ''));
-    const { openaiApiKey, provider, customApiKey, customApiUrl } = useSettingsStore();
+    const { openaiApiKey, provider, customApiKey, customApiUrl, prompts, defaultLanguage } = useSettingsStore();
     const {
         isPolishModalOpen,
         isTranslateModalOpen,
@@ -36,9 +38,16 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
     const [content, setContent] = useState(post?.sourceContent || '');
     const [isPolishing, setIsPolishing] = useState(false);
     const [isTranslating, setIsTranslating] = useState(false);
+    const [translationProgress, setTranslationProgress] = useState<{
+        completed: number;
+        total: number;
+        currentLabel?: string;
+    } | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const contentRef = useRef(content);
+    const hasUnsavedChangesRef = useRef(hasUnsavedChanges);
 
     // Fix: Redefine getAiSettings to use explicit checks inside handlers or just simple strings if not added to locale
     // The previous implementation returned an object with errorMsg. 
@@ -71,6 +80,18 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
     // Get selected variant content (if any)
     const selectedVariant = variants.find((v) => v.isSelected);
     const contentToPublish = selectedVariant?.content || content;
+    const getPromptName = (templateId?: string | null) => {
+        if (!templateId) return 'Variant';
+        const prompt = prompts.find((item) => item.id === templateId);
+        if (prompt?.name) return prompt.name;
+        return POLISH_TEMPLATE_NAMES[templateId as keyof typeof POLISH_TEMPLATE_NAMES] || templateId;
+    };
+
+    const selectedVariantLabel = selectedVariant
+        ? selectedVariant.type === 'translation' && selectedVariant.language
+            ? LANGUAGE_NAMES[selectedVariant.language]
+            : getPromptName(selectedVariant.promptTemplate)
+        : '';
 
     // Update content when post changes
     useEffect(() => {
@@ -80,14 +101,22 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
         }
     }, [post]);
 
-    // Save on unmount
+    useEffect(() => {
+        contentRef.current = content;
+    }, [content]);
+
+    useEffect(() => {
+        hasUnsavedChangesRef.current = hasUnsavedChanges;
+    }, [hasUnsavedChanges]);
+
+    // Save on unmount or when switching posts
     useEffect(() => {
         return () => {
-            if (hasUnsavedChanges && currentPostId && content) {
-                updatePost(currentPostId, { sourceContent: content });
+            if (hasUnsavedChangesRef.current && currentPostId && contentRef.current) {
+                updatePost(currentPostId, { sourceContent: contentRef.current });
             }
         };
-    }, [hasUnsavedChanges, currentPostId, content, updatePost]);
+    }, [currentPostId, updatePost]);
 
     const handleContentChange = (newContent: string) => {
         setContent(newContent);
@@ -156,21 +185,35 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
 
         // Logic for checking API key
         if (provider === 'custom' && !customApiKey) {
-            setError('Please configure your Custom API settings in Settings'); // Left as hardcoded fallback or need key
+            setError(t('editor.api_key_missing_custom'));
             closePolishModal();
             return;
         }
         if (provider !== 'custom' && !openaiApiKey) {
-            setError('Please configure your OpenAI API key in Settings'); // Left as hardcoded fallback
+            setError(t('editor.api_key_missing_openai'));
             closePolishModal();
             return;
         }
 
         const apiKey = provider === 'custom' ? customApiKey : openaiApiKey;
         const baseURL = provider === 'custom' ? customApiUrl : undefined;
+        const permissionBaseUrl = provider === 'custom' ? (customApiUrl || '') : DEFAULT_OPENAI_BASE_URL;
 
         if (!apiKey) {
             // Should not happen due to checks above
+            return;
+        }
+
+        const permissionResult = await ensureHostPermission(permissionBaseUrl);
+        if (!permissionResult.granted) {
+            if (permissionResult.reason === 'invalid_url') {
+                setError(t('editor.permission.invalid_url'));
+            } else if (permissionResult.reason === 'not_allowed') {
+                setError(t('editor.permission.not_allowed', permissionResult.origin || ''));
+            } else {
+                setError(t('editor.permission.denied', permissionResult.origin || ''));
+            }
+            closePolishModal();
             return;
         }
 
@@ -180,7 +223,7 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
         try {
             const result = await aiService.polish(content, selectedPrompt.content, apiKey, baseURL);
 
-            await addVariant({
+            const newVariant = await addVariant({
                 postId: currentPostId!,
                 type: 'polish',
                 language: null,
@@ -190,6 +233,7 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
                 description: selectedPrompt.description || result.description,
                 isSelected: false,
             });
+            await selectVariant(newVariant.id);
 
             closePolishModal();
         } catch (err) {
@@ -199,55 +243,98 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
         }
     };
 
-    const handleTranslate = async (targetLanguage: Language, sourceLanguage: Language) => {
-        if (!content.trim()) {
+    const handleTranslate = async (
+        targetLanguages: Language[],
+        sourceMode: 'source' | 'selected'
+    ) => {
+        const sourceContent =
+            sourceMode === 'selected' && selectedVariant?.content
+                ? selectedVariant.content
+                : content;
+
+        if (!sourceContent.trim()) {
             setError(t('editor.translate_error'));
+            return;
+        }
+
+        if (targetLanguages.length === 0) {
             return;
         }
 
         // Logic for checking API key
         if (provider === 'custom' && !customApiKey) {
-            setError('Please configure your Custom API settings in Settings');
+            setError(t('editor.api_key_missing_custom'));
             closeTranslateModal();
             return;
         }
         if (provider !== 'custom' && !openaiApiKey) {
-            setError('Please configure your OpenAI API key in Settings');
+            setError(t('editor.api_key_missing_openai'));
             closeTranslateModal();
             return;
         }
 
         const apiKey = provider === 'custom' ? customApiKey : openaiApiKey;
         const baseURL = provider === 'custom' ? customApiUrl : undefined;
+        const permissionBaseUrl = provider === 'custom' ? (customApiUrl || '') : DEFAULT_OPENAI_BASE_URL;
+
+        const permissionResult = await ensureHostPermission(permissionBaseUrl);
+        if (!permissionResult.granted) {
+            if (permissionResult.reason === 'invalid_url') {
+                setError(t('editor.permission.invalid_url'));
+            } else if (permissionResult.reason === 'not_allowed') {
+                setError(t('editor.permission.not_allowed', permissionResult.origin || ''));
+            } else {
+                setError(t('editor.permission.denied', permissionResult.origin || ''));
+            }
+            closeTranslateModal();
+            return;
+        }
 
         setIsTranslating(true);
         setError(null);
+        setTranslationProgress({ completed: 0, total: targetLanguages.length });
 
         try {
-            const result = await aiService.translate(
-                content,
-                targetLanguage,
-                sourceLanguage,
-                apiKey!,
-                baseURL
-            );
+            let completed = 0;
+            for (const targetLanguage of targetLanguages) {
+                setTranslationProgress({
+                    completed,
+                    total: targetLanguages.length,
+                    currentLabel: LANGUAGE_NAMES[targetLanguage] || targetLanguage,
+                });
+                const result = await aiService.translate(
+                    sourceContent,
+                    targetLanguage,
+                    apiKey!,
+                    baseURL
+                );
 
-            await addVariant({
-                postId: currentPostId!,
-                type: 'translation',
-                language: targetLanguage,
-                promptTemplate: null,
-                content: result.content,
-                aiConfidence: result.confidence,
-                description: result.description,
-                isSelected: false,
-            });
+                const newVariant = await addVariant({
+                    postId: currentPostId!,
+                    type: 'translation',
+                    language: targetLanguage,
+                    promptTemplate: null,
+                    content: result.content,
+                    aiConfidence: result.confidence,
+                    description: result.description,
+                    isSelected: false,
+                });
+                await selectVariant(newVariant.id);
+
+                completed += 1;
+                setTranslationProgress({
+                    completed,
+                    total: targetLanguages.length,
+                    currentLabel: LANGUAGE_NAMES[targetLanguage] || targetLanguage,
+                });
+            }
 
             closeTranslateModal();
         } catch (err) {
             setError(err instanceof Error ? err.message : t('editor.translate_fail'));
         } finally {
             setIsTranslating(false);
+            setTranslationProgress(null);
         }
     };
 
@@ -270,19 +357,6 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
                     >
                         <ArrowLeft size={20} />
                     </button>
-                    <nav className="flex items-center text-sm text-text-muted">
-                        <button onClick={handleNavigateBack} className="hover:text-text-primary">
-                            {t('editor.home')}
-                        </button>
-                        <span className="mx-2">/</span>
-                        <span className="text-text-primary">
-                            {post?.sourceContent
-                                ? (post.sourceContent.length > 20
-                                    ? post.sourceContent.slice(0, 20) + '...'
-                                    : post.sourceContent)
-                                : t('editor.new_post')}
-                        </span>
-                    </nav>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -290,8 +364,11 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
                     {selectedVariant && (
                         <span className="text-xs text-accent bg-accent/10 px-2 py-1 rounded">
                             {selectedVariant.type === 'translation'
-                                ? t('editor.using.translation', selectedVariant.language!)
-                                : t('editor.using', selectedVariant.promptTemplate!)
+                                ? t(
+                                    'editor.using.translation',
+                                    selectedVariant.language ? LANGUAGE_NAMES[selectedVariant.language] : ''
+                                )
+                                : t('editor.using', getPromptName(selectedVariant.promptTemplate))
                             }
                         </span>
                     )}
@@ -301,7 +378,7 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
                         {hasUnsavedChanges ? `${t('editor.save')}*` : t('editor.saved')}
                     </Button>
                     <Button leftIcon={<Send size={16} />} onClick={handlePublish}>
-                        {t('editor.post_to_x')}
+                        <span className="hidden sm:inline">{t('editor.post_to_x')}</span>
                     </Button>
                 </div>
             </header>
@@ -314,9 +391,9 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
             )}
 
             {/* Main content */}
-            <div className="flex-1 flex overflow-hidden">
+            <div className="flex-1 grid grid-rows-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-rows-1 lg:grid-cols-[minmax(0,1fr)_24rem] overflow-hidden">
                 {/* Source editor */}
-                <div className="flex-1 p-6 overflow-y-auto border-r border-border-primary">
+                <div className="min-h-0 p-4 lg:p-6 overflow-y-auto border-b border-border-primary lg:border-b-0 lg:border-r">
                     <SourceEditor
                         content={content}
                         onChange={handleContentChange}
@@ -329,7 +406,7 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
                 </div>
 
                 {/* Variants panel */}
-                <div className="w-96 p-6 overflow-y-auto">
+                <div className="min-h-0 p-4 lg:p-6 overflow-y-auto border-t border-border-primary lg:border-t-0">
                     <VariantsPanel
                         variants={variants}
                         onSelectVariant={handleSelectVariant}
@@ -351,6 +428,11 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
                 onClose={closeTranslateModal}
                 onTranslate={handleTranslate}
                 isLoading={isTranslating}
+                hasSelectedVariant={Boolean(selectedVariant)}
+                selectedVariantLabel={selectedVariantLabel}
+                defaultSourceMode={selectedVariant ? 'selected' : 'source'}
+                defaultTargets={[defaultLanguage]}
+                progress={translationProgress}
             />
         </div>
     );

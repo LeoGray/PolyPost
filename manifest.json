@@ -25,9 +25,10 @@
   },
   "permissions": [
     "storage",
-    "sidePanel"
+    "sidePanel",
+    "permissions"
   ],
-  "host_permissions": [
-    "https://api.openai.com/*"
+  "optional_host_permissions": [
+    "<all_urls>"
   ]
 }

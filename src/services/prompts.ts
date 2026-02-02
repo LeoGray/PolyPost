@@ -20,7 +20,11 @@ export const POLISH_PROMPTS: Record<PolishTemplate, string> = {
 // ============================================
 // Translation Prompts
 // ============================================
-export const TRANSLATION_PROMPT = `You are a professional translator specializing in social media content. Translate the following tweet to {language}. 
+export const TRANSLATION_PROMPT = `请自动识别源语言，并将以下内容翻译成 {language}。
+如果包含混合语言，请尽量保留专有名词/术语原文，仅翻译必要部分。
+
+You are a professional translator. Detect the source language automatically and translate the text into {language}.
+If the input is mixed-language, keep proper nouns/terms as-is and only translate where appropriate.
 
 Important guidelines:
 - Maintain the tone and style of the original
@@ -29,10 +33,10 @@ Important guidelines:
 - Ensure the translation fits within 280 characters
 - Make the translation sound natural to native speakers
 
-Original tweet ({sourceLanguage}):
+Content:
 {content}
 
-Translated tweet ({language}):`;
+Translated ({language}):`;
 
 // ============================================
 // Language names for prompts
@@ -56,13 +60,11 @@ export function getPolishPrompt(template: PolishTemplate, content: string): stri
 
 export function getTranslationPrompt(
     content: string,
-    targetLanguage: Language,
-    sourceLanguage: Language = 'en'
+    targetLanguage: Language
 ): string {
     return TRANSLATION_PROMPT
         .replace('{content}', content)
-        .replace('{language}', LANGUAGE_FULL_NAMES[targetLanguage])
-        .replace('{sourceLanguage}', LANGUAGE_FULL_NAMES[sourceLanguage]);
+        .replace('{language}', LANGUAGE_FULL_NAMES[targetLanguage]);
 }
 
 // ============================================

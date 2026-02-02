@@ -32,6 +32,7 @@ export const SourceEditor: React.FC<SourceEditorProps> = ({
 
     // Track IME composition state
     const isComposingRef = useRef(false);
+    const [isComposing, setIsComposing] = useState(false);
     const [localValue, setLocalValue] = useState(content);
 
     // Sync local value with props when content changes externally
@@ -43,20 +44,23 @@ export const SourceEditor: React.FC<SourceEditorProps> = ({
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newValue = e.target.value;
-        setLocalValue(newValue);
-
-        // Only propagate change if not in IME composition
-        if (!isComposingRef.current) {
-            onChange(newValue);
+        if (isComposingRef.current) {
+            setLocalValue(newValue);
+            return;
         }
+        onChange(newValue);
     };
 
     const handleCompositionStart = () => {
         isComposingRef.current = true;
+        setIsComposing(true);
+        setLocalValue(content);
     };
 
     const handleCompositionEnd = (e: React.CompositionEvent<HTMLTextAreaElement>) => {
         isComposingRef.current = false;
+        setIsComposing(false);
+        setLocalValue((e.target as HTMLTextAreaElement).value);
         // Propagate the final composed value
         onChange((e.target as HTMLTextAreaElement).value);
     };
@@ -95,7 +99,7 @@ export const SourceEditor: React.FC<SourceEditorProps> = ({
             {/* Content area */}
             <div className="flex-1 flex flex-col">
                 <textarea
-                    value={localValue}
+                    value={isComposing ? localValue : content}
                     onChange={handleChange}
                     onBlur={onBlur}
                     onCompositionStart={handleCompositionStart}

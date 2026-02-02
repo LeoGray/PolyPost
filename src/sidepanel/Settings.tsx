@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, Key, Globe, Palette, Laptop } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { useSettingsStore } from '@/store';
-import type { Language, PolishTemplate } from '@/types';
+import type { Language } from '@/types';
 import { LANGUAGE_NAMES, POLISH_TEMPLATE_NAMES } from '@/types';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -20,6 +20,7 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
         defaultPolishTemplate,
         theme,
         uiLanguage,
+        prompts,
         setOpenaiApiKey,
         setProvider,
         setCustomApiUrl,
@@ -31,6 +32,9 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
     } = useSettingsStore();
 
     const { t } = useTranslation();
+    const promptOptions = prompts.length
+        ? prompts.map((prompt) => ({ id: prompt.id, name: prompt.name }))
+        : Object.entries(POLISH_TEMPLATE_NAMES).map(([id, name]) => ({ id, name }));
 
     const [settings, setSettings] = useState({
         provider: provider || 'openai',
@@ -55,12 +59,10 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
     const handleSaveSettings = async () => {
         setIsSaving(true);
         try {
-            await Promise.all([
-                setProvider(settings.provider),
-                setOpenaiApiKey(settings.openaiApiKey),
-                setCustomApiUrl(settings.customApiUrl),
-                setCustomApiKey(settings.customApiKey),
-            ]);
+            await setProvider(settings.provider);
+            await setOpenaiApiKey(settings.openaiApiKey);
+            await setCustomApiUrl(settings.customApiUrl);
+            await setCustomApiKey(settings.customApiKey);
         } finally {
             setIsSaving(false);
         }
@@ -102,6 +104,9 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
                                 <option value="openai">{t('settings.provider.openai')}</option>
                                 <option value="custom">{t('settings.provider.custom')}</option>
                             </select>
+                            <p className="text-xs text-text-muted mt-2">
+                                {t('settings.permission_hint')}
+                            </p>
                         </div>
 
                         {settings.provider === 'openai' ? (
@@ -217,12 +222,12 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
                             </label>
                             <select
                                 value={defaultPolishTemplate}
-                                onChange={(e) => setDefaultPolishTemplate(e.target.value as PolishTemplate)}
+                                onChange={(e) => setDefaultPolishTemplate(e.target.value)}
                                 className="w-full px-4 py-2 bg-bg-tertiary border border-border-primary rounded-lg text-text-primary"
                             >
-                                {Object.entries(POLISH_TEMPLATE_NAMES).map(([code, name]) => (
-                                    <option key={code} value={code}>
-                                        {name}
+                                {promptOptions.map((prompt) => (
+                                    <option key={prompt.id} value={prompt.id}>
+                                        {prompt.name}
                                     </option>
                                 ))}
                             </select>

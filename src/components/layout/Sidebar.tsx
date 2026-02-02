@@ -55,17 +55,17 @@ export const Sidebar: React.FC = () => {
     };
 
     return (
-        <aside className="w-56 h-full bg-bg-primary border-r border-border-primary flex flex-col">
+        <aside className="w-16 sm:w-56 h-full bg-bg-primary border-r border-border-primary flex flex-col shrink-0 transition-all duration-200">
             {/* Logo */}
-            <div className="h-16 px-4 border-b border-border-primary flex items-center gap-2">
+            <div className="h-16 px-2 sm:px-4 border-b border-border-primary flex items-center justify-center sm:justify-start gap-2">
                 <div className="w-8 h-8 flex items-center justify-center overflow-hidden rounded-lg">
                     <img src="/icons/icon48.png" alt="PolyPost Logo" className="w-full h-full object-cover" />
                 </div>
-                <span className="text-text-primary font-semibold text-lg">{t('app.name')}</span>
+                <span className="text-text-primary font-semibold text-lg hidden sm:inline">{t('app.name')}</span>
             </div>
 
             {/* Library Section */}
-            <div className="flex-1 overflow-y-auto py-4">
+            <div className="flex-1 overflow-y-auto py-3 sm:py-4">
                 <nav className="px-2 space-y-1">
                     {libraryItems.map((item) => {
                         const count = getCount(item.id);
@@ -75,8 +75,11 @@ export const Sidebar: React.FC = () => {
                                 onClick={() => {
                                     setLibraryFilter(item.id);
                                 }}
+                                aria-label={item.label}
+                                title={item.label}
                                 className={`
-                  w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm
+                  w-full flex items-center px-2 sm:px-3 py-2 rounded-lg text-sm
+                  justify-center sm:justify-start gap-0 sm:gap-3
                   transition-colors duration-150
                   ${libraryFilter === item.id && !selectedFolderId
                                         ? 'bg-bg-tertiary text-text-primary'
@@ -85,9 +88,9 @@ export const Sidebar: React.FC = () => {
                 `}
                             >
                                 {item.icon}
-                                <span>{item.label}</span>
+                                <span className="hidden sm:inline">{item.label}</span>
                                 {count !== null && count > 0 && (
-                                    <span className="ml-auto bg-accent/20 text-accent text-xs px-1.5 py-0.5 rounded">
+                                    <span className="ml-auto bg-accent/20 text-accent text-xs px-1.5 py-0.5 rounded hidden sm:inline-flex">
                                         {count}
                                     </span>
                                 )}
@@ -102,8 +105,11 @@ export const Sidebar: React.FC = () => {
                         onClick={() => {
                             setDashboardView('prompts');
                         }}
+                        aria-label={t('nav.prompts')}
+                        title={t('nav.prompts')}
                         className={`
-                            w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm
+                            w-full flex items-center px-2 sm:px-3 py-2 rounded-lg text-sm
+                            justify-center sm:justify-start gap-0 sm:gap-3
                             transition-colors duration-150
                             ${dashboardView === 'prompts'
                                 ? 'bg-bg-tertiary text-text-primary'
@@ -114,18 +120,20 @@ export const Sidebar: React.FC = () => {
                         <div className="flex items-center justify-center w-[18px]">
                             <span className="text-lg leading-none">✨</span>
                         </div>
-                        <span>{t('nav.prompts')}</span>
+                        <span className="hidden sm:inline">{t('nav.prompts')}</span>
                     </button>
                 </div>
 
                 {/* Folders Section */}
                 <div className="mt-2 px-2">
-                    <div className="flex items-center justify-between px-3 py-2">
-                        <span className="text-text-muted text-xs font-medium uppercase tracking-wider">
+                    <div className="flex items-center justify-center sm:justify-between px-2 sm:px-3 py-2">
+                        <span className="text-text-muted text-xs font-medium uppercase tracking-wider hidden sm:block">
                             {t('nav.folders')}
                         </span>
                         <button
                             onClick={() => openFolderModal('create')}
+                            aria-label={t('actions.create')}
+                            title={t('actions.create')}
                             className="p-1 rounded hover:bg-bg-tertiary text-text-muted hover:text-text-primary transition-colors"
                         >
                             <Plus size={14} />
@@ -150,17 +158,22 @@ export const Sidebar: React.FC = () => {
                                 >
                                     <button
                                         onClick={() => setSelectedFolderId(folder.id)}
-                                        className="flex-1 flex items-center gap-3 px-3 py-2 text-sm overflow-hidden"
+                                        aria-label={folder.name}
+                                        title={folder.name}
+                                        className="flex-1 flex items-center justify-center sm:justify-start gap-0 sm:gap-3 px-2 sm:px-3 py-2 text-sm overflow-hidden"
                                     >
                                         <Folder size={18} style={{ color: folder.color }} />
-                                        <span className="truncate">{folder.name}</span>
+                                        <span className="truncate hidden sm:inline">{folder.name}</span>
                                         {folderPostCount > 0 && (
-                                            <span className="ml-auto text-text-muted text-xs">{folderPostCount}</span>
+                                            <span className="ml-auto text-text-muted text-xs hidden sm:inline">{folderPostCount}</span>
                                         )}
                                     </button>
+                                    <span className="absolute left-full ml-2 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs bg-bg-tertiary text-text-primary px-2 py-1 rounded border border-border-primary shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity sm:hidden">
+                                        {folder.name}
+                                    </span>
 
                                     {/* Folder Actions */}
-                                    <div className="absolute right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="absolute right-1 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex">
                                         <div className="flex bg-bg-tertiary rounded shadow-sm border border-border-primary">
                                             <button
                                                 onClick={(e) => {
@@ -193,12 +206,12 @@ export const Sidebar: React.FC = () => {
             </div>
 
             {/* Appearance Switcher */}
-            <div className="p-3 border-t border-border-primary">
-                <div className="bg-bg-secondary/50 p-1 rounded-lg flex items-center justify-between">
+            <div className="p-2 sm:p-3 border-t border-border-primary">
+                <div className="bg-bg-secondary/50 p-1 rounded-lg flex flex-col sm:flex-row items-center sm:justify-between gap-1 sm:gap-0">
                     <button
                         onClick={() => setTheme('light')}
                         className={`
-                            flex-1 flex items-center justify-center p-1.5 rounded-md transition-all duration-200
+                            w-full sm:flex-1 flex items-center justify-center p-1.5 rounded-md transition-all duration-200
                             ${theme === 'light'
                                 ? 'bg-bg-primary text-accent shadow-sm'
                                 : 'text-text-secondary hover:text-text-primary'
@@ -211,7 +224,7 @@ export const Sidebar: React.FC = () => {
                     <button
                         onClick={() => setTheme('dark')}
                         className={`
-                            flex-1 flex items-center justify-center p-1.5 rounded-md transition-all duration-200
+                            w-full sm:flex-1 flex items-center justify-center p-1.5 rounded-md transition-all duration-200
                             ${theme === 'dark'
                                 ? 'bg-bg-primary text-accent shadow-sm'
                                 : 'text-text-secondary hover:text-text-primary'
@@ -224,7 +237,7 @@ export const Sidebar: React.FC = () => {
                     <button
                         onClick={() => setTheme('system')}
                         className={`
-                            flex-1 flex items-center justify-center p-1.5 rounded-md transition-all duration-200
+                            w-full sm:flex-1 flex items-center justify-center p-1.5 rounded-md transition-all duration-200
                             ${theme === 'system'
                                 ? 'bg-bg-primary text-accent shadow-sm'
                                 : 'text-text-secondary hover:text-text-primary'

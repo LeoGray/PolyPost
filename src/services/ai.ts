@@ -1,6 +1,9 @@
 import OpenAI from 'openai';
 import type { Language } from '@/types';
 import { getTranslationPrompt, LANGUAGE_FULL_NAMES } from './prompts';
+import { proxyFetch } from './proxyFetch';
+
+export const DEFAULT_OPENAI_BASE_URL = 'https://api.openai.com/v1';
 
 interface AIResponse {
     content: string;
@@ -13,16 +16,25 @@ interface AIResponse {
  */
 export class AIService {
     private client: OpenAI | null = null;
+    private clientConfigKey: string | null = null;
+
+    private getLanguageGuardrail(): string {
+        return '请保持输出与输入语言一致，不要翻译。Keep the output in the same language as the input. Do not translate.';
+    }
 
     private getClient(apiKey: string, baseURL?: string): OpenAI {
-        if (!this.client ||
-            (this.client as unknown as { apiKey: string }).apiKey !== apiKey ||
-            this.client.baseURL !== (baseURL || 'https://api.openai.com/v1')) {
+        const resolvedBaseUrl = baseURL || DEFAULT_OPENAI_BASE_URL;
+        const useProxyFetch = resolvedBaseUrl !== DEFAULT_OPENAI_BASE_URL;
+        const configKey = `${apiKey}|${resolvedBaseUrl}|${useProxyFetch ? 'proxy' : 'direct'}`;
+
+        if (!this.client || this.clientConfigKey !== configKey) {
             this.client = new OpenAI({
                 apiKey,
-                baseURL,
+                baseURL: resolvedBaseUrl,
+                fetch: useProxyFetch ? proxyFetch : undefined,
                 dangerouslyAllowBrowser: true, // Required for browser extension
             });
+            this.clientConfigKey = configKey;
         }
         return this.client;
     }
@@ -57,13 +69,15 @@ ${content}
 Rewritten tweet:`;
         }
 
+        prompt = `${prompt}\n\n${this.getLanguageGuardrail()}`;
+
         try {
             const response = await client.chat.completions.create({
                 model: 'gpt-4o-mini',
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are a professional social media content writer. Output only the rewritten tweet, nothing else.',
+                        content: 'You are a professional social media content writer. Keep the output in the same language as the input. 不要翻译，保持与输入相同语言。Output only the rewritten text, nothing else.',
                     },
                     {
                         role: 'user',
@@ -96,7 +110,6 @@ Rewritten tweet:`;
     async translate(
         content: string,
         targetLanguage: Language,
-        sourceLanguage: Language,
         apiKey: string,
         baseURL?: string
     ): Promise<AIResponse> {
@@ -105,7 +118,7 @@ Rewritten tweet:`;
         }
 
         const client = this.getClient(apiKey, baseURL);
-        const prompt = getTranslationPrompt(content, targetLanguage, sourceLanguage);
+        const prompt = getTranslationPrompt(content, targetLanguage);
 
         try {
             const response = await client.chat.completions.create({
@@ -113,7 +126,7 @@ Rewritten tweet:`;
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are a professional translator. Output only the translated text, nothing else.',
+                        content: 'You are a professional translator. Detect the source language automatically and translate to the target language. 请自动识别源语言并翻译成目标语言。Output only the translated text, nothing else.',
                     },
                     {
                         role: 'user',

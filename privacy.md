@@ -2,42 +2,50 @@
 
 **Last Updated:** February 2, 2026
 
-## Introduction
-PolyPost ("we", "our", or "us") respects your privacy. This Privacy Policy explains how PolyPost collects, uses, and protects your information when you use our Chrome Extension.
+## Overview
+PolyPost ("we", "our", or "us") is a Chrome extension that helps you create and manage social media posts in a side panel, with optional AI-powered polishing and translation. We do not operate any backend server or multi-user system. Most functionality runs entirely in your browser, except for optional requests you initiate to third-party services (such as AI providers or Twitter/X web intents).
 
-## Data Collection and storage
-**We do not collect, store, or share any of your personal data on our servers.**
+## Data We Store Locally
+PolyPost stores your data on your device using Chrome storage:
 
-PolyPost operates as a standalone extension with no backend database. All data generated or used by the extension is stored locally on your device or synced via your personal Chrome account.
+- **Content data**: posts, drafts, variants, and folder structures are saved in `chrome.storage.local`.
+- **Settings**: preferences such as default language, UI language, theme, prompts, provider selection, custom API URL, and API keys are saved in `chrome.storage.sync` (if Chrome sync is enabled) or locally.
 
-*   **Local Data**: Your posts, drafts, folders, and settings are stored locally in your browser using the Chrome `storage` API.
-*   **Sync Data**: If valid, some preferences may be synced across your devices using Chrome's built-in sync mechanism (`storage.sync`), which is managed by Google.
+We do not receive or store this data on our servers.
 
-## Data Usage
-The data you input into PolyPost is used solely for the purpose of providing the extension's functionality:
+## Data We Transmit
+PolyPost only transmits data when you explicitly use certain features:
 
-1.  **AI Services (OpenAI)**:
-    *   To provide AI-powered text polishing and translation features, the content you explicitly select is sent to OpenAI's API (`https://api.openai.com`).
-    *   This data is transmitted securely and is processed according to OpenAI's API data usage policies (OpenAI does not train on API data by default).
-    *   Your OpenAI API Key is stored locally on your device and is never shared with us or any other third party.
+1. **AI Features (OpenAI or compatible providers)**
+   - When you click polish or translate, the selected content and relevant options are sent to the API endpoint you configure (OpenAI by default, or a compatible third-party provider).
+   - Your API key is stored locally in Chrome storage and is used only to authenticate requests directly to that provider.
+   - We do not receive or store your content or API key.
+   - Data is processed under the chosen provider's own data usage policy.
 
-2.  **Twitter (X) Integration**:
-    *   The extension interacts with Twitter/X via standard web links (Web Intents) to allow you to publish content. No Twitter credentials are accessed or stored by the extension.
+2. **Twitter/X Publishing (Web Intent)**
+   - When you choose to publish, the extension opens Twitter/X Web Intent in a new tab and passes the text as URL parameters.
+   - The extension does not access or store your Twitter/X credentials and does not auto-post on your behalf.
 
 ## Permissions Usage
-PolyPost requests the minimum permissions necessary to function:
+PolyPost requests the minimum permissions required to function:
 
-*   **`storage`**: Required to save your drafts, folders, and application settings locally.
-*   **`sidePanel`**: Required to display the application interface in the browser side panel.
-*   **Host Permissions (`https://api.openai.com/*`)**: Required to communicate directly with OpenAI servers for text processing features.
+- **`storage`**: Save your drafts, folders, variants, prompts, and settings locally.
+- **`sidePanel`**: Display the main interface in the browser side panel.
+- **`permissions`**: Request optional host permissions at runtime when you use a new AI API domain.
+- **Optional host permissions (`<all_urls>`)**: Used only to connect to the AI API domain you configure (e.g., OpenAI or a compatible provider). Chrome will prompt you when a new domain is needed. If you deny, AI features for that domain will not work.
+
+## No Central Server or Analytics
+- We do not operate any server to collect, store, or analyze user data.
+- We do not use analytics or tracking scripts.
+- Your data remains accessible only to the current browser user.
 
 ## Remote Code Policy
-PolyPost is fully compliant with the Chrome Web Store policy regarding remote code. **We do not execute any remote code.**
-*   All application logic is bundled within the extension package.
-*   We do not load external scripts or use `eval()` functions.
+PolyPost complies with Chrome Web Store policies on remote code. We do not execute remote code.
+- All application logic is bundled within the extension package.
+- We do not load remote scripts or use `eval()`.
 
 ## Changes to This Policy
-We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
+We may update this Privacy Policy from time to time. If changes are made, we will update the "Last Updated" date and publish the new policy text.
 
-## Contact Us
-If you have any questions about this Privacy Policy, please contact us at: [Your Contact Email]
+## Contact
+If you have questions about this Privacy Policy, please contact us at: [Your Contact Email]
