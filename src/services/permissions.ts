@@ -1,9 +1,23 @@
 export const OPTIONAL_HOST_ORIGINS = [
-    '<all_urls>',
+    'https://*/*',
+    'http://*/*',
     // Keep in sync with manifest.json optional_host_permissions.
 ];
 
 export type HostPermissionFailureReason = 'invalid_url' | 'not_allowed' | 'denied';
+
+const escapeRegex = (value: string) => value.replace(/[-/\\^$+?.()|[\]{}]/g, '\\$&');
+
+const matchesOriginPattern = (origin: string, pattern: string) => {
+    if (pattern === origin) {
+        return true;
+    }
+
+    const regex = new RegExp(
+        `^${pattern.split('*').map(escapeRegex).join('.*')}$`,
+    );
+    return regex.test(origin);
+};
 
 const toOriginPattern = (baseUrl: string): string | null => {
     if (!baseUrl) {
@@ -34,8 +48,11 @@ export const ensureHostPermission = async (
     }
 
     const allowAll = OPTIONAL_HOST_ORIGINS.includes('<all_urls>');
+    const isAllowed = allowAll
+        ? true
+        : OPTIONAL_HOST_ORIGINS.some((pattern) => matchesOriginPattern(origin, pattern));
 
-    if (!allowAll && !OPTIONAL_HOST_ORIGINS.includes(origin)) {
+    if (!isAllowed) {
         return { granted: false, origin, reason: 'not_allowed' };
     }
 

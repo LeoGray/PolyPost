@@ -1,6 +1,6 @@
 # Privacy Policy for PolyPost
 
-**Last Updated:** February 2, 2026
+**Last Updated:** February 3, 2026
 
 ## Overview
 
@@ -29,14 +29,22 @@ PolyPost only transmits data when you explicitly use certain features:
     - When you choose to publish, the extension opens Twitter/X Web Intent in a new tab and passes the text as URL parameters.
     - The extension does not access or store your Twitter/X credentials and does not auto-post on your behalf.
 
+## On-page Data Access (X follower filters)
+
+- When you use the follower filter tool, the extension reads the visible follower/following list on the current X/Twitter page to hide entries that do not match your selected filters.
+- This on-page data is processed locally in your browser, is not stored by the extension, and is not transmitted to any server.
+
 ## Permissions Usage
 
 PolyPost requests the minimum permissions required to function:
 
 - **`storage`**: Save your drafts, folders, variants, prompts, and settings locally.
 - **`sidePanel`**: Display the main interface in the browser side panel.
-- **`permissions`**: Request optional host permissions at runtime when you use a new AI API domain.
-- **Optional host permissions (`<all_urls>`)**: Used only to connect to the AI API domain you configure (e.g., OpenAI or a compatible provider). Chrome will prompt you when a new domain is needed. If you deny, AI features for that domain will not work.
+- **`tabs`**: Read the active tab URL and open X pages when you use follower filter shortcuts.
+- **`scripting`**: Inject the follower filter panel into the current X/Twitter page when you click the inject button.
+- **Optional host permissions (`http://*/*`, `https://*/*`)**:
+    - Used only to allow connections to the AI API domain you configure (OpenAI by default, or a custom provider).
+    - Chrome will prompt you before granting access to a new domain.
 
 ## No Central Server or Analytics
 

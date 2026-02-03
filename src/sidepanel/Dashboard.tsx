@@ -5,6 +5,7 @@ import { Button } from '@/components/ui';
 import { Plus } from 'lucide-react';
 import { PromptSettings } from './PromptSettings';
 import { QuickTranslate } from './QuickTranslate';
+import { FollowersFilter } from './FollowersFilter';
 import { usePostsStore, useFoldersStore, useUIStore } from '@/store';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -88,7 +89,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         }
     };
 
-    const isTranslateView = dashboardView === 'translate';
+    const isUtilityView = dashboardView === 'translate' || dashboardView === 'followers';
 
     return (
         <div className="flex h-screen bg-bg-primary">
@@ -99,8 +100,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     onNewPost={handleCreateNew}
                     onSettings={onNavigateToSettings}
                     showNewPost={false}
-                    showSearch={!isTranslateView}
-                    showViewToggle={!isTranslateView}
+                    showSearch={!isUtilityView}
+                    showViewToggle={!isUtilityView}
                 />
 
                 <main className="flex-1 overflow-y-auto p-6">
@@ -132,6 +133,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         <PromptSettings />
                     ) : dashboardView === 'translate' ? (
                         <QuickTranslate />
+                    ) : dashboardView === 'followers' ? (
+                        <FollowersFilter />
                     ) : (
                         <PostGrid
                             posts={filteredPosts}

@@ -11,6 +11,7 @@ import {
     Edit2,
     Trash2,
     Languages,
+    Users,
 } from 'lucide-react';
 import { useFoldersStore, useUIStore, usePostsStore, useSettingsStore } from '@/store';
 import type { LibraryFilter } from '@/types';
@@ -153,6 +154,30 @@ export const Sidebar: React.FC = () => {
                     >
                         <Languages size={18} />
                         <span className="hidden sm:inline">{t('nav.quick_translate')}</span>
+                    </button>
+                </div>
+
+                {/* Followers Filter Section */}
+                <div className="mt-2 px-2">
+                    <button
+                        onClick={() => {
+                            setDashboardView('followers');
+                        }}
+                        aria-label={t('nav.followers')}
+                        title={t('nav.followers')}
+                        className={`
+                            w-full flex items-center px-2 sm:px-3 py-2 rounded-lg text-sm
+                            justify-center sm:justify-start gap-0 sm:gap-3
+                            transition-colors duration-150
+                            ${
+                                dashboardView === 'followers'
+                                    ? 'bg-bg-tertiary text-text-primary'
+                                    : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary'
+                            }
+                        `}
+                    >
+                        <Users size={18} />
+                        <span className="hidden sm:inline">{t('nav.followers')}</span>
                     </button>
                 </div>
 

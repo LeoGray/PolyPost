@@ -131,7 +131,7 @@ export interface Settings {
 export type ViewMode = 'grid' | 'list';
 export type LibraryFilter = 'all' | 'drafts' | 'scheduled' | 'posted';
 export type SettingsView = 'general' | 'prompts'; // New type for settings navigation
-export type DashboardView = 'posts' | 'prompts' | 'translate';
+export type DashboardView = 'posts' | 'prompts' | 'translate' | 'followers';
 
 export interface UIState {
     viewMode: ViewMode;
