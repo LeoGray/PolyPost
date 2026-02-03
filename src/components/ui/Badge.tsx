@@ -27,10 +27,7 @@ export const Badge: React.FC<BadgeProps> = ({
     const style = color ? { backgroundColor: `${color}20`, color } : undefined;
 
     return (
-        <span
-            className={`${baseStyles} ${variantStyles[variant]} ${className}`}
-            style={style}
-        >
+        <span className={`${baseStyles} ${variantStyles[variant]} ${className}`} style={style}>
             {children}
         </span>
     );

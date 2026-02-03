@@ -78,7 +78,9 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
                 >
                     <ArrowLeft size={20} />
                 </button>
-                <h1 className="ml-4 text-lg font-semibold text-text-primary">{t('settings.title')}</h1>
+                <h1 className="ml-4 text-lg font-semibold text-text-primary">
+                    {t('settings.title')}
+                </h1>
             </header>
 
             {/* Content */}
@@ -87,7 +89,9 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
                 <section className="mb-8">
                     <div className="flex items-center gap-2 mb-4">
                         <Key size={20} className="text-accent" />
-                        <h2 className="text-lg font-semibold text-text-primary">{t('settings.ai.title')}</h2>
+                        <h2 className="text-lg font-semibold text-text-primary">
+                            {t('settings.ai.title')}
+                        </h2>
                     </div>
 
                     <div className="space-y-4 bg-bg-secondary rounded-xl p-4 border border-border-primary">
@@ -98,7 +102,12 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
                             </label>
                             <select
                                 value={settings.provider}
-                                onChange={(e) => setSettings({ ...settings, provider: e.target.value as 'openai' | 'custom' })}
+                                onChange={(e) =>
+                                    setSettings({
+                                        ...settings,
+                                        provider: e.target.value as 'openai' | 'custom',
+                                    })
+                                }
                                 className="w-full px-4 py-2 bg-bg-tertiary border border-border-primary rounded-lg text-text-primary"
                             >
                                 <option value="openai">{t('settings.provider.openai')}</option>
@@ -118,7 +127,12 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
                                     <Input
                                         type={showApiKey ? 'text' : 'password'}
                                         value={settings.openaiApiKey}
-                                        onChange={(e) => setSettings({ ...settings, openaiApiKey: e.target.value })}
+                                        onChange={(e) =>
+                                            setSettings({
+                                                ...settings,
+                                                openaiApiKey: e.target.value,
+                                            })
+                                        }
                                         placeholder={t('settings.apikey.placeholder')}
                                         className="flex-1"
                                     />
@@ -142,7 +156,12 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
                                     <Input
                                         type="text"
                                         value={settings.customApiUrl}
-                                        onChange={(e) => setSettings({ ...settings, customApiUrl: e.target.value })}
+                                        onChange={(e) =>
+                                            setSettings({
+                                                ...settings,
+                                                customApiUrl: e.target.value,
+                                            })
+                                        }
                                         placeholder={t('settings.customUrl.placeholder')}
                                     />
                                 </div>
@@ -154,7 +173,12 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
                                         <Input
                                             type={showApiKey ? 'text' : 'password'}
                                             value={settings.customApiKey}
-                                            onChange={(e) => setSettings({ ...settings, customApiKey: e.target.value })}
+                                            onChange={(e) =>
+                                                setSettings({
+                                                    ...settings,
+                                                    customApiKey: e.target.value,
+                                                })
+                                            }
                                             placeholder={t('settings.customKey.placeholder')}
                                             className="flex-1"
                                         />
@@ -181,7 +205,9 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
                 <section className="mb-8">
                     <div className="flex items-center gap-2 mb-4">
                         <Globe size={20} className="text-accent" />
-                        <h2 className="text-lg font-semibold text-text-primary">{t('settings.defaults.title')}</h2>
+                        <h2 className="text-lg font-semibold text-text-primary">
+                            {t('settings.defaults.title')}
+                        </h2>
                     </div>
 
                     <div className="space-y-4 bg-bg-secondary rounded-xl p-4 border border-border-primary">
@@ -239,7 +265,9 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
                 <section className="mb-8">
                     <div className="flex items-center gap-2 mb-4">
                         <Palette size={20} className="text-accent" />
-                        <h2 className="text-lg font-semibold text-text-primary">{t('settings.appearance.title')}</h2>
+                        <h2 className="text-lg font-semibold text-text-primary">
+                            {t('settings.appearance.title')}
+                        </h2>
                     </div>
 
                     <div className="space-y-4 bg-bg-secondary rounded-xl p-4 border border-border-primary">
@@ -250,28 +278,31 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigateBack }) => {
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => setTheme('light')}
-                                    className={`flex-1 py-3 rounded-lg border flex items-center justify-center gap-2 ${theme === 'light'
-                                        ? 'border-accent bg-accent/10 text-text-primary'
-                                        : 'border-border-primary text-text-muted hover:border-text-muted'
-                                        }`}
+                                    className={`flex-1 py-3 rounded-lg border flex items-center justify-center gap-2 ${
+                                        theme === 'light'
+                                            ? 'border-accent bg-accent/10 text-text-primary'
+                                            : 'border-border-primary text-text-muted hover:border-text-muted'
+                                    }`}
                                 >
                                     <span>☀️</span> {t('settings.theme.light')}
                                 </button>
                                 <button
                                     onClick={() => setTheme('dark')}
-                                    className={`flex-1 py-3 rounded-lg border flex items-center justify-center gap-2 ${theme === 'dark'
-                                        ? 'border-accent bg-accent/10 text-text-primary'
-                                        : 'border-border-primary text-text-muted hover:border-text-muted'
-                                        }`}
+                                    className={`flex-1 py-3 rounded-lg border flex items-center justify-center gap-2 ${
+                                        theme === 'dark'
+                                            ? 'border-accent bg-accent/10 text-text-primary'
+                                            : 'border-border-primary text-text-muted hover:border-text-muted'
+                                    }`}
                                 >
                                     <span>🌙</span> {t('settings.theme.dark')}
                                 </button>
                                 <button
                                     onClick={() => setTheme('system')}
-                                    className={`flex-1 py-3 rounded-lg border flex items-center justify-center gap-2 ${theme === 'system'
-                                        ? 'border-accent bg-accent/10 text-text-primary'
-                                        : 'border-border-primary text-text-muted hover:border-text-muted'
-                                        }`}
+                                    className={`flex-1 py-3 rounded-lg border flex items-center justify-center gap-2 ${
+                                        theme === 'system'
+                                            ? 'border-accent bg-accent/10 text-text-primary'
+                                            : 'border-border-primary text-text-muted hover:border-text-muted'
+                                    }`}
                                 >
                                     <Laptop size={16} /> {t('settings.theme.system')}
                                 </button>

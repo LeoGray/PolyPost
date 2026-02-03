@@ -31,7 +31,8 @@ const getDefaultPrompts = (): PolishPrompt[] => {
         id: key,
         template: key,
         name: POLISH_TEMPLATE_NAMES[key as keyof typeof POLISH_TEMPLATE_NAMES] || key,
-        description: POLISH_TEMPLATE_DESCRIPTIONS[key as keyof typeof POLISH_TEMPLATE_DESCRIPTIONS] || '',
+        description:
+            POLISH_TEMPLATE_DESCRIPTIONS[key as keyof typeof POLISH_TEMPLATE_DESCRIPTIONS] || '',
         content,
     }));
 };
@@ -57,7 +58,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
             let prompts = settings.prompts;
             if (!prompts || prompts.length === 0) {
                 prompts = getDefaultPrompts();
-                // We should probably save these defaults to storage immediately so they persist? 
+                // We should probably save these defaults to storage immediately so they persist?
                 // Alternatively, component logic decides. Let's save them to ensure consistency.
                 // However, we don't want to overwrite if the user actually deleted everything (but logic prevents that).
                 // So if it's undefined/null, we set defaults.
@@ -124,7 +125,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
     updatePrompt: async (updatedPrompt: PolishPrompt) => {
         const { prompts } = get();
-        const newPrompts = prompts.map(p => p.id === updatedPrompt.id ? updatedPrompt : p);
+        const newPrompts = prompts.map((p) => (p.id === updatedPrompt.id ? updatedPrompt : p));
         set({ prompts: newPrompts });
         await storage.updateSettings({ prompts: newPrompts });
     },
@@ -134,7 +135,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         if (prompts.length <= 1) {
             throw new Error('Cannot delete the last prompt');
         }
-        const newPrompts = prompts.filter(p => p.id !== id);
+        const newPrompts = prompts.filter((p) => p.id !== id);
         set({ prompts: newPrompts });
         await storage.updateSettings({ prompts: newPrompts });
     },
@@ -143,5 +144,5 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         const defaultPrompts = getDefaultPrompts();
         set({ prompts: defaultPrompts });
         await storage.updateSettings({ prompts: defaultPrompts });
-    }
+    },
 }));

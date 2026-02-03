@@ -58,13 +58,11 @@ export function getPolishPrompt(template: PolishTemplate, content: string): stri
     return POLISH_PROMPTS[template].replace('{content}', content);
 }
 
-export function getTranslationPrompt(
-    content: string,
-    targetLanguage: Language
-): string {
-    return TRANSLATION_PROMPT
-        .replace('{content}', content)
-        .replace('{language}', LANGUAGE_FULL_NAMES[targetLanguage]);
+export function getTranslationPrompt(content: string, targetLanguage: Language): string {
+    return TRANSLATION_PROMPT.replace('{content}', content).replace(
+        '{language}',
+        LANGUAGE_FULL_NAMES[targetLanguage],
+    );
 }
 
 // ============================================

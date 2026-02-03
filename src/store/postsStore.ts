@@ -59,24 +59,24 @@ export const usePostsStore = create<PostsState>((set, get) => ({
         };
 
         await storage.addPost(post);
-        set(state => ({ posts: [...state.posts, post] }));
+        set((state) => ({ posts: [...state.posts, post] }));
         return post;
     },
 
     updatePost: async (id: string, updates: Partial<Post>) => {
         await storage.updatePost(id, updates);
-        set(state => ({
-            posts: state.posts.map(p =>
-                p.id === id ? { ...p, ...updates, updatedAt: Date.now() } : p
+        set((state) => ({
+            posts: state.posts.map((p) =>
+                p.id === id ? { ...p, ...updates, updatedAt: Date.now() } : p,
             ),
         }));
     },
 
     deletePost: async (id: string) => {
         await storage.deletePost(id);
-        set(state => ({
-            posts: state.posts.filter(p => p.id !== id),
-            variants: state.variants.filter(v => v.postId !== id),
+        set((state) => ({
+            posts: state.posts.filter((p) => p.id !== id),
+            variants: state.variants.filter((v) => v.postId !== id),
             currentPostId: state.currentPostId === id ? null : state.currentPostId,
         }));
     },
@@ -91,11 +91,8 @@ export const usePostsStore = create<PostsState>((set, get) => ({
     loadVariants: async (postId: string) => {
         try {
             const variants = await storage.getVariantsByPostId(postId);
-            set(state => ({
-                variants: [
-                    ...state.variants.filter(v => v.postId !== postId),
-                    ...variants,
-                ],
+            set((state) => ({
+                variants: [...state.variants.filter((v) => v.postId !== postId), ...variants],
             }));
         } catch (error) {
             console.error('Failed to load variants:', error);
@@ -110,23 +107,21 @@ export const usePostsStore = create<PostsState>((set, get) => ({
         };
 
         await storage.addVariant(variant);
-        set(state => ({ variants: [...state.variants, variant] }));
+        set((state) => ({ variants: [...state.variants, variant] }));
         return variant;
     },
 
     selectVariant: async (variantId: string) => {
-        const variant = get().variants.find(v => v.id === variantId);
+        const variant = get().variants.find((v) => v.id === variantId);
         if (!variant) return;
 
         // Deselect all variants for this post, then select the chosen one
-        const updatedVariants = get().variants.map(v =>
-            v.postId === variant.postId
-                ? { ...v, isSelected: v.id === variantId }
-                : v
+        const updatedVariants = get().variants.map((v) =>
+            v.postId === variant.postId ? { ...v, isSelected: v.id === variantId } : v,
         );
 
         // Update in storage
-        for (const v of updatedVariants.filter(v => v.postId === variant.postId)) {
+        for (const v of updatedVariants.filter((v) => v.postId === variant.postId)) {
             await storage.updateVariant(v.id, { isSelected: v.isSelected });
         }
 
@@ -135,13 +130,13 @@ export const usePostsStore = create<PostsState>((set, get) => ({
 
     deleteVariant: async (id: string) => {
         await storage.deleteVariant(id);
-        set(state => ({
-            variants: state.variants.filter(v => v.id !== id),
+        set((state) => ({
+            variants: state.variants.filter((v) => v.id !== id),
         }));
     },
 
     getPostById: (id: string) => {
-        return get().posts.find(p => p.id === id);
+        return get().posts.find((p) => p.id === id);
     },
 
     getPostsByFilter: (filter: LibraryFilter, folderId?: string | null) => {
@@ -149,7 +144,7 @@ export const usePostsStore = create<PostsState>((set, get) => ({
 
         // Filter by folder
         if (folderId !== undefined) {
-            posts = posts.filter(p => p.folderId === folderId);
+            posts = posts.filter((p) => p.folderId === folderId);
         }
 
         // Filter by status
@@ -162,7 +157,7 @@ export const usePostsStore = create<PostsState>((set, get) => ({
 
         const status = statusMap[filter];
         if (status) {
-            posts = posts.filter(p => p.status === status);
+            posts = posts.filter((p) => p.status === status);
         }
 
         // Sort by updatedAt descending
@@ -170,8 +165,8 @@ export const usePostsStore = create<PostsState>((set, get) => ({
     },
 
     getVariantsByPostId: (postId: string) => {
-        return get().variants
-            .filter(v => v.postId === postId)
+        return get()
+            .variants.filter((v) => v.postId === postId)
             .sort((a, b) => b.createdAt - a.createdAt);
     },
 }));

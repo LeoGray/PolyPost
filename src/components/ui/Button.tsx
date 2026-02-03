@@ -19,11 +19,13 @@ export const Button: React.FC<ButtonProps> = ({
     disabled,
     ...props
 }) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+    const baseStyles =
+        'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
 
     const variantStyles = {
         primary: 'bg-accent hover:bg-accent-hover text-white',
-        secondary: 'bg-bg-tertiary hover:bg-border-primary text-text-primary border border-border-primary',
+        secondary:
+            'bg-bg-tertiary hover:bg-border-primary text-text-primary border border-border-primary',
         ghost: 'bg-transparent hover:bg-bg-tertiary text-text-secondary hover:text-text-primary',
         danger: 'bg-red-600 hover:bg-red-700 text-white',
     };

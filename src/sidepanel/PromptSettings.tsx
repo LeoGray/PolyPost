@@ -26,7 +26,14 @@ const PromptCard: React.FC<{
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <span className="font-semibold text-text-primary text-sm">{prompt.name}</span>
-                    {isDefault && <Badge variant="default" className="!bg-accent !text-white border-transparent py-0 h-5">{t('settings.prompts.default_label')}</Badge>}
+                    {isDefault && (
+                        <Badge
+                            variant="default"
+                            className="!bg-accent !text-white border-transparent py-0 h-5"
+                        >
+                            {t('settings.prompts.default_label')}
+                        </Badge>
+                    )}
                 </div>
                 <div className="relative">
                     <button
@@ -108,7 +115,14 @@ const PromptListItem: React.FC<{
             <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                     <span className="font-medium text-text-primary text-sm">{prompt.name}</span>
-                    {isDefault && <Badge variant="default" className="!bg-accent !text-white border-transparent py-0 h-5">{t('settings.prompts.default_label')}</Badge>}
+                    {isDefault && (
+                        <Badge
+                            variant="default"
+                            className="!bg-accent !text-white border-transparent py-0 h-5"
+                        >
+                            {t('settings.prompts.default_label')}
+                        </Badge>
+                    )}
                 </div>
                 <div className="text-xs text-text-secondary font-mono mt-1 opacity-70 truncate">
                     {prompt.content || prompt.template}
@@ -171,7 +185,14 @@ const PromptListItem: React.FC<{
 };
 
 export const PromptSettings: React.FC = () => {
-    const { prompts, addPrompt, updatePrompt, deletePrompt, defaultPolishTemplate, setDefaultPolishTemplate } = useSettingsStore();
+    const {
+        prompts,
+        addPrompt,
+        updatePrompt,
+        deletePrompt,
+        defaultPolishTemplate,
+        setDefaultPolishTemplate,
+    } = useSettingsStore();
     const { viewMode } = useUIStore();
     const { t } = useTranslation();
     const [isAdding, setIsAdding] = useState(false);
@@ -252,7 +273,9 @@ export const PromptSettings: React.FC = () => {
                 <div>
                     <h2 className="text-xl font-bold text-text-primary">
                         {isFormOpen
-                            ? (isAdding ? t('settings.prompts.add') : t('settings.prompts.edit'))
+                            ? isAdding
+                                ? t('settings.prompts.add')
+                                : t('settings.prompts.edit')
                             : t('settings.prompts.title')}
                     </h2>
                     <p className="text-sm text-text-muted mt-1">
@@ -300,19 +323,24 @@ export const PromptSettings: React.FC = () => {
                             <div className="relative flex-1 flex flex-col min-h-0">
                                 <textarea
                                     value={formData.content}
-                                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, content: e.target.value })
+                                    }
                                     className="w-full flex-1 bg-bg-primary border border-border-primary rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-accent/50 resize-none font-mono text-sm placeholder:text-text-muted/50 min-h-[200px]"
                                     placeholder={t('settings.prompts.form.template.placeholder')}
                                     required
                                 />
                                 <div className="absolute top-2 right-2 group">
-                                    <AlertCircle size={14} className="text-text-muted cursor-help" />
+                                    <AlertCircle
+                                        size={14}
+                                        className="text-text-muted cursor-help"
+                                    />
                                     <div className="absolute right-0 w-64 p-2 bg-popover rounded shadow-lg border border-border-primary text-xs text-text-secondary invisible group-hover:visible z-10">
-                                        Use <code>{'{content}'}</code> as a placeholder for the user's input text.
+                                        Use <code>{'{content}'}</code> as a placeholder for the
+                                        user's input text.
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <div className="flex justify-end gap-2 pt-2">
                             <Button variant="ghost" size="sm" onClick={resetForm}>
@@ -326,8 +354,14 @@ export const PromptSettings: React.FC = () => {
                 </div>
             ) : (
                 /* Prompts List/Grid */
-                <div className={viewMode === 'grid' ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6" : "flex flex-col gap-2 pb-6"}>
-                    {prompts.map((prompt) => (
+                <div
+                    className={
+                        viewMode === 'grid'
+                            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6'
+                            : 'flex flex-col gap-2 pb-6'
+                    }
+                >
+                    {prompts.map((prompt) =>
                         viewMode === 'grid' ? (
                             <PromptCard
                                 key={prompt.id}
@@ -350,8 +384,8 @@ export const PromptSettings: React.FC = () => {
                                 canDelete={prompts.length > 1}
                                 t={t}
                             />
-                        )
-                    ))}
+                        ),
+                    )}
 
                     {/* Add Button as Card in Grid View */}
                     {viewMode === 'grid' && (

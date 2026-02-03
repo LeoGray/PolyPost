@@ -9,18 +9,12 @@ interface ModalProps {
     size?: 'sm' | 'md' | 'lg';
 }
 
-export const Modal: React.FC<ModalProps> = ({
-    isOpen,
-    onClose,
-    title,
-    children,
-    size = 'md',
-}) => {
+export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 'md' }) => {
     const handleEscape = useCallback(
         (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
         },
-        [onClose]
+        [onClose],
     );
 
     useEffect(() => {
@@ -45,10 +39,7 @@ export const Modal: React.FC<ModalProps> = ({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                onClick={onClose}
-            />
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
             {/* Modal content */}
             <div

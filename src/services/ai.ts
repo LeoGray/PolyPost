@@ -46,7 +46,7 @@ export class AIService {
         content: string,
         promptTemplate: string, // The actual prompt text, not just ID
         apiKey: string,
-        baseURL?: string
+        baseURL?: string,
     ): Promise<AIResponse> {
         if (!apiKey) {
             throw new Error('API key is required. Please configure it in Settings.');
@@ -77,7 +77,8 @@ Rewritten tweet:`;
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are a professional social media content writer. Keep the output in the same language as the input. 不要翻译，保持与输入相同语言。Output only the rewritten text, nothing else.',
+                        content:
+                            'You are a professional social media content writer. Keep the output in the same language as the input. 不要翻译，保持与输入相同语言。Output only the rewritten text, nothing else.',
                     },
                     {
                         role: 'user',
@@ -111,7 +112,7 @@ Rewritten tweet:`;
         content: string,
         targetLanguage: Language,
         apiKey: string,
-        baseURL?: string
+        baseURL?: string,
     ): Promise<AIResponse> {
         if (!apiKey) {
             throw new Error('API key is required. Please configure it in Settings.');
@@ -126,7 +127,8 @@ Rewritten tweet:`;
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are a professional translator. Detect the source language automatically and translate to the target language. 请自动识别源语言并翻译成目标语言。Output only the translated text, nothing else.',
+                        content:
+                            'You are a professional translator. Detect the source language automatically and translate to the target language. 请自动识别源语言并翻译成目标语言。Output only the translated text, nothing else.',
                     },
                     {
                         role: 'user',
@@ -146,7 +148,9 @@ Rewritten tweet:`;
             };
         } catch (error) {
             console.error('Translation error:', error);
-            throw new Error('Failed to translate content. Please check your API key and try again.');
+            throw new Error(
+                'Failed to translate content. Please check your API key and try again.',
+            );
         }
     }
 

@@ -30,7 +30,8 @@ export const DeleteFolderModal: React.FC = () => {
         >
             <div className="space-y-4">
                 <p className="text-text-secondary">
-                    Are you sure you want to delete this folder? Posts in this folder will not be deleted but will be removed from this folder.
+                    Are you sure you want to delete this folder? Posts in this folder will not be
+                    deleted but will be removed from this folder.
                 </p>
 
                 <div className="flex justify-end gap-3 pt-2">

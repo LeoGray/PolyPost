@@ -17,7 +17,11 @@ const Popup: React.FC = () => {
             {/* Logo */}
             <div className="flex items-center gap-2 mb-4">
                 <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-xl">
-                    <img src="/icons/icon128.png" alt="PolyPost Logo" className="w-full h-full object-cover" />
+                    <img
+                        src="/icons/icon128.png"
+                        alt="PolyPost Logo"
+                        className="w-full h-full object-cover"
+                    />
                 </div>
                 <div>
                     <h1 className="text-text-primary font-semibold text-lg">PolyPost</h1>
@@ -60,5 +64,5 @@ const Popup: React.FC = () => {
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <Popup />
-    </React.StrictMode>
+    </React.StrictMode>,
 );

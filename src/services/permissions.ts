@@ -21,7 +21,9 @@ const toOriginPattern = (baseUrl: string): string | null => {
     }
 };
 
-export const ensureHostPermission = async (baseUrl: string): Promise<{
+export const ensureHostPermission = async (
+    baseUrl: string,
+): Promise<{
     granted: boolean;
     origin?: string;
     reason?: HostPermissionFailureReason;

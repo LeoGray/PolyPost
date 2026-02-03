@@ -66,7 +66,13 @@ const PostListItem: React.FC<{
                 {/* Status */}
                 <div className="w-20">
                     <Badge
-                        variant={post.status === 'draft' ? 'draft' : post.status === 'posted' ? 'posted' : 'scheduled'}
+                        variant={
+                            post.status === 'draft'
+                                ? 'draft'
+                                : post.status === 'posted'
+                                  ? 'posted'
+                                  : 'scheduled'
+                        }
                     >
                         {post.status}
                     </Badge>
@@ -76,7 +82,10 @@ const PostListItem: React.FC<{
                 <div className="w-24">
                     {currentFolder ? (
                         <span className="text-xs text-text-secondary flex items-center gap-1">
-                            <div className="w-2 h-2 rounded" style={{ backgroundColor: currentFolder.color }} />
+                            <div
+                                className="w-2 h-2 rounded"
+                                style={{ backgroundColor: currentFolder.color }}
+                            />
                             {currentFolder.name}
                         </span>
                     ) : (
@@ -151,7 +160,10 @@ const PostListItem: React.FC<{
                             className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-left
                 ${post.folderId === folder.id ? 'bg-accent/10 text-accent' : 'text-text-primary hover:bg-bg-tertiary'}`}
                         >
-                            <div className="w-3 h-3 rounded" style={{ backgroundColor: folder.color }} />
+                            <div
+                                className="w-3 h-3 rounded"
+                                style={{ backgroundColor: folder.color }}
+                            />
                             {folder.name}
                         </button>
                     ))}

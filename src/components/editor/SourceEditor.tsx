@@ -70,7 +70,9 @@ export const SourceEditor: React.FC<SourceEditorProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <div>
-                    <h2 className="text-lg font-semibold text-text-primary">{t('editor.source.label')}</h2>
+                    <h2 className="text-lg font-semibold text-text-primary">
+                        {t('editor.source.label')}
+                    </h2>
                     <p className="text-sm text-text-muted">{t('editor.source.desc')}</p>
                 </div>
 
@@ -115,9 +117,7 @@ export const SourceEditor: React.FC<SourceEditorProps> = ({
                 <div className="flex items-center justify-between mt-4">
                     {/* Media buttons */}
                     {/* Media buttons - REMOVED as Twitter Web Intent doesn't support media */}
-                    <div className="flex items-center gap-2">
-                        {/* Buttons removed */}
-                    </div>
+                    <div className="flex items-center gap-2">{/* Buttons removed */}</div>
 
                     {/* Campaign and char count */}
                     <div className="flex items-center gap-4">
@@ -126,18 +126,23 @@ export const SourceEditor: React.FC<SourceEditorProps> = ({
                         )}
                         <div className="flex items-center gap-2">
                             <div
-                                className={`h-1.5 w-24 rounded-full overflow-hidden ${isOverLimit ? 'bg-red-500/20' : 'bg-bg-tertiary'
-                                    }`}
+                                className={`h-1.5 w-24 rounded-full overflow-hidden ${
+                                    isOverLimit ? 'bg-red-500/20' : 'bg-bg-tertiary'
+                                }`}
                             >
                                 <div
-                                    className={`h-full transition-all ${isOverLimit ? 'bg-red-500' : 'bg-accent'
-                                        }`}
-                                    style={{ width: `${Math.min((charCount / maxChars) * 100, 100)}%` }}
+                                    className={`h-full transition-all ${
+                                        isOverLimit ? 'bg-red-500' : 'bg-accent'
+                                    }`}
+                                    style={{
+                                        width: `${Math.min((charCount / maxChars) * 100, 100)}%`,
+                                    }}
                                 />
                             </div>
                             <span
-                                className={`text-sm ${isOverLimit ? 'text-red-500' : 'text-text-muted'
-                                    }`}
+                                className={`text-sm ${
+                                    isOverLimit ? 'text-red-500' : 'text-text-muted'
+                                }`}
                             >
                                 {t('editor.char_count', charCount, maxChars)}
                             </span>

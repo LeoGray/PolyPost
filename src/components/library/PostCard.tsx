@@ -99,11 +99,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, variants, onClick }) =
                     {/* Language badges and folder */}
                     <div className="flex items-center gap-1.5 flex-wrap">
                         {currentFolder && (
-                            <Badge
-                                variant="tag"
-                                className="text-xs"
-                                color={currentFolder.color}
-                            >
+                            <Badge variant="tag" className="text-xs" color={currentFolder.color}>
                                 {currentFolder.name}
                             </Badge>
                         )}
@@ -143,7 +139,10 @@ export const PostCard: React.FC<PostCardProps> = ({ post, variants, onClick }) =
                             className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-left
                 ${post.folderId === folder.id ? 'bg-accent/10 text-accent' : 'text-text-primary hover:bg-bg-tertiary'}`}
                         >
-                            <div className="w-3 h-3 rounded" style={{ backgroundColor: folder.color }} />
+                            <div
+                                className="w-3 h-3 rounded"
+                                style={{ backgroundColor: folder.color }}
+                            />
                             {folder.name}
                         </button>
                     ))}

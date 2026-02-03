@@ -41,7 +41,9 @@ export const PolishModal: React.FC<PolishModalProps> = ({
 }) => {
     const { t } = useTranslation();
     const { prompts, defaultPolishTemplate } = useSettingsStore();
-    const [selectedTemplateId, setSelectedTemplateId] = useState<string>(defaultPolishTemplate || 'professional');
+    const [selectedTemplateId, setSelectedTemplateId] = useState<string>(
+        defaultPolishTemplate || 'professional',
+    );
 
     const handlePolish = () => {
         onPolish(selectedTemplateId);
@@ -58,9 +60,7 @@ export const PolishModal: React.FC<PolishModalProps> = ({
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={t('editor.polish.title')} size="md">
             <div className="space-y-4">
-                <p className="text-sm text-text-secondary">
-                    {t('editor.polish.desc')}
-                </p>
+                <p className="text-sm text-text-secondary">{t('editor.polish.desc')}</p>
 
                 {/* Template grid */}
                 <div className="grid grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto pr-1">
@@ -70,9 +70,10 @@ export const PolishModal: React.FC<PolishModalProps> = ({
                             onClick={() => setSelectedTemplateId(prompt.id)}
                             className={`
                                 p-4 rounded-xl border text-left transition-all
-                                ${selectedTemplateId === prompt.id
-                                    ? 'border-accent bg-accent/10'
-                                    : 'border-border-primary bg-bg-tertiary hover:border-text-muted'
+                                ${
+                                    selectedTemplateId === prompt.id
+                                        ? 'border-accent bg-accent/10'
+                                        : 'border-border-primary bg-bg-tertiary hover:border-text-muted'
                                 }
                             `}
                         >
@@ -80,7 +81,7 @@ export const PolishModal: React.FC<PolishModalProps> = ({
                                 className="w-10 h-10 rounded-lg flex items-center justify-center mb-2"
                                 style={{
                                     backgroundColor: `${getColor(prompt.id, prompt.template)}20`,
-                                    color: getColor(prompt.id, prompt.template)
+                                    color: getColor(prompt.id, prompt.template),
                                 }}
                             >
                                 {getIcon(prompt.id, prompt.template)}

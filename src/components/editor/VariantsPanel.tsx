@@ -28,7 +28,9 @@ export const VariantsPanel: React.FC<VariantsPanelProps> = ({
         if (!templateId) return 'Variant';
         const prompt = prompts.find((item) => item.id === templateId);
         if (prompt?.name) return prompt.name;
-        return POLISH_TEMPLATE_NAMES[templateId as keyof typeof POLISH_TEMPLATE_NAMES] || templateId;
+        return (
+            POLISH_TEMPLATE_NAMES[templateId as keyof typeof POLISH_TEMPLATE_NAMES] || templateId
+        );
     };
 
     const getVariantLabel = (variant: Variant) => {
@@ -98,7 +100,9 @@ export const VariantsPanel: React.FC<VariantsPanelProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-semibold text-text-primary">{t('editor.variants')}</h2>
+                    <h2 className="text-lg font-semibold text-text-primary">
+                        {t('editor.variants')}
+                    </h2>
                     <span className="text-sm text-text-muted">{variants.length}</span>
                 </div>
             </div>
@@ -111,7 +115,8 @@ export const VariantsPanel: React.FC<VariantsPanelProps> = ({
                             <Sparkles size={24} className="text-text-muted" />
                         </div>
                         <p className="text-text-muted text-sm">
-                            {t('editor.variants.empty')}<br />
+                            {t('editor.variants.empty')}
+                            <br />
                             {t('editor.variants.empty_desc')}
                         </p>
                     </div>
@@ -119,14 +124,16 @@ export const VariantsPanel: React.FC<VariantsPanelProps> = ({
                     variants.map((variant) => (
                         <Card
                             key={variant.id}
-                            className={`p-4 ${variant.isSelected ? 'ring-2 ring-accent' : ''
-                                }`}
+                            className={`p-4 ${variant.isSelected ? 'ring-2 ring-accent' : ''}`}
                             onClick={() => onSelectVariant(variant.id)}
                             hoverable
                         >
                             {/* Variant header */}
                             <div className="flex items-center justify-between gap-2 mb-2">
-                                <Badge color={getVariantColor(variant)} className="flex items-center gap-1">
+                                <Badge
+                                    color={getVariantColor(variant)}
+                                    className="flex items-center gap-1"
+                                >
                                     {getVariantIcon(variant)}
                                     {getVariantLabel(variant)}
                                 </Badge>
@@ -179,7 +186,9 @@ export const VariantsPanel: React.FC<VariantsPanelProps> = ({
                     onClick={onGenerateMore}
                     isLoading={isGenerating}
                 >
-                    {isGenerating ? t('editor.variants.generate_more.loading') : t('editor.variants.generate_more')}
+                    {isGenerating
+                        ? t('editor.variants.generate_more.loading')
+                        : t('editor.variants.generate_more')}
                 </Button>
             </div>
         </div>

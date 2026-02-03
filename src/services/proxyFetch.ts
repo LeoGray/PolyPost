@@ -41,7 +41,7 @@ const headersToObject = (headers?: HeadersInit): Record<string, string> => {
 
 const readBody = async (
     input: Request | string | URL,
-    init?: RequestInit
+    init?: RequestInit,
 ): Promise<string | undefined> => {
     if (init?.body) {
         if (typeof init.body === 'string') {
@@ -95,13 +95,12 @@ export const proxyFetch: typeof fetch = async (input, init) => {
         return fetch(input, init);
     }
 
-    const url = typeof input === 'string'
-        ? input
-        : input instanceof URL
-            ? input.toString()
-            : input.url;
+    const url =
+        typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
     const method = init?.method ?? (input instanceof Request ? input.method : 'GET');
-    const headers = headersToObject(init?.headers ?? (input instanceof Request ? input.headers : undefined));
+    const headers = headersToObject(
+        init?.headers ?? (input instanceof Request ? input.headers : undefined),
+    );
     const body = await readBody(input, init);
 
     const response = await sendProxyFetch({

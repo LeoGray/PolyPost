@@ -31,6 +31,6 @@ export const useTranslation = () => {
 
     return {
         t,
-        language: uiLanguage
+        language: uiLanguage,
     };
 };

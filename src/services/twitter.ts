@@ -29,7 +29,7 @@ export function openTweetIntent(options: TweetIntentOptions): void {
     if (options.hashtags && options.hashtags.length > 0) {
         // Remove # prefix if present, Twitter adds it automatically
         const cleanHashtags = options.hashtags.map((tag) =>
-            tag.startsWith('#') ? tag.slice(1) : tag
+            tag.startsWith('#') ? tag.slice(1) : tag,
         );
         params.set('hashtags', cleanHashtags.join(','));
     }

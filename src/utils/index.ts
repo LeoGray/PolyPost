@@ -52,7 +52,7 @@ export function countCharacters(text: string): number {
 export function getInitials(name: string): string {
     return name
         .split(' ')
-        .map(word => word[0])
+        .map((word) => word[0])
         .join('')
         .toUpperCase()
         .substring(0, 2);
@@ -63,7 +63,7 @@ export function getInitials(name: string): string {
  */
 export function debounce<T extends (...args: unknown[]) => unknown>(
     func: T,
-    wait: number
+    wait: number,
 ): (...args: Parameters<T>) => void {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
@@ -98,7 +98,7 @@ export function classifyContent(content: string): string[] {
 
     // Check for technical content
     const technicalKeywords = ['code', 'api', 'data', 'system', 'algorithm', 'function', 'deploy'];
-    if (technicalKeywords.some(kw => content.toLowerCase().includes(kw))) {
+    if (technicalKeywords.some((kw) => content.toLowerCase().includes(kw))) {
         tags.push('Technical');
     }
 

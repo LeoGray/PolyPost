@@ -38,7 +38,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
             </div>
         );
-    }
+    },
 );
 
 Input.displayName = 'Input';
@@ -73,7 +73,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
                 {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
             </div>
         );
-    }
+    },
 );
 
 Textarea.displayName = 'Textarea';

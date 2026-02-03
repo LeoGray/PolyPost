@@ -1,9 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: 'class',
-    content: [
-        "./src/**/*.{js,ts,jsx,tsx}",
-    ],
+    content: ['./src/**/*.{js,ts,jsx,tsx}'],
     theme: {
         extend: {
             colors: {
@@ -17,7 +15,7 @@ export default {
                 'border-secondary': 'rgb(var(--border-secondary) / <alpha-value>)',
 
                 // Accent colors
-                'accent': 'rgb(var(--accent) / <alpha-value>)',
+                accent: 'rgb(var(--accent) / <alpha-value>)',
                 'accent-hover': 'rgb(var(--accent-hover) / <alpha-value>)',
 
                 // Text colors
@@ -44,4 +42,4 @@ export default {
         },
     },
     plugins: [],
-}
+};

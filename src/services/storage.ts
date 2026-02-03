@@ -36,7 +36,7 @@ export const storage = {
 
     async updatePost(id: string, updates: Partial<Post>): Promise<void> {
         const posts = await this.getPosts();
-        const index = posts.findIndex(p => p.id === id);
+        const index = posts.findIndex((p) => p.id === id);
         if (index !== -1) {
             posts[index] = { ...posts[index], ...updates, updatedAt: Date.now() };
             await this.savePosts(posts);
@@ -45,11 +45,11 @@ export const storage = {
 
     async deletePost(id: string): Promise<void> {
         const posts = await this.getPosts();
-        const filtered = posts.filter(p => p.id !== id);
+        const filtered = posts.filter((p) => p.id !== id);
         await this.savePosts(filtered);
         // Also delete associated variants
         const variants = await this.getVariants();
-        const filteredVariants = variants.filter(v => v.postId !== id);
+        const filteredVariants = variants.filter((v) => v.postId !== id);
         await this.saveVariants(filteredVariants);
     },
 
@@ -73,18 +73,18 @@ export const storage = {
 
     async getVariantsByPostId(postId: string): Promise<Variant[]> {
         const variants = await this.getVariants();
-        return variants.filter(v => v.postId === postId);
+        return variants.filter((v) => v.postId === postId);
     },
 
     async deleteVariant(id: string): Promise<void> {
         const variants = await this.getVariants();
-        const filtered = variants.filter(v => v.id !== id);
+        const filtered = variants.filter((v) => v.id !== id);
         await this.saveVariants(filtered);
     },
 
     async updateVariant(id: string, updates: Partial<Variant>): Promise<void> {
         const variants = await this.getVariants();
-        const index = variants.findIndex(v => v.id === id);
+        const index = variants.findIndex((v) => v.id === id);
         if (index !== -1) {
             variants[index] = { ...variants[index], ...updates };
             await this.saveVariants(variants);
@@ -111,7 +111,7 @@ export const storage = {
 
     async updateFolder(id: string, updates: Partial<Folder>): Promise<void> {
         const folders = await this.getFolders();
-        const index = folders.findIndex(f => f.id === id);
+        const index = folders.findIndex((f) => f.id === id);
         if (index !== -1) {
             folders[index] = { ...folders[index], ...updates, updatedAt: Date.now() };
             await this.saveFolders(folders);
@@ -120,12 +120,12 @@ export const storage = {
 
     async deleteFolder(id: string): Promise<void> {
         const folders = await this.getFolders();
-        const filtered = folders.filter(f => f.id !== id);
+        const filtered = folders.filter((f) => f.id !== id);
         await this.saveFolders(filtered);
         // Move posts in this folder to uncategorized
         const posts = await this.getPosts();
-        const updatedPosts = posts.map(p =>
-            p.folderId === id ? { ...p, folderId: null, updatedAt: Date.now() } : p
+        const updatedPosts = posts.map((p) =>
+            p.folderId === id ? { ...p, folderId: null, updatedAt: Date.now() } : p,
         );
         await this.savePosts(updatedPosts);
     },
@@ -136,32 +136,36 @@ export const storage = {
     async getSettings(): Promise<Settings> {
         if (isExtensionEnv) {
             const result = await chrome.storage.sync.get(STORAGE_KEYS.SETTINGS);
-            return result[STORAGE_KEYS.SETTINGS] || {
-                openaiApiKey: '',
-                provider: 'openai',
-                customApiUrl: '',
-                customApiKey: '',
-                defaultLanguage: 'en',
-                defaultPolishTemplate: 'professional',
-                theme: 'dark',
-                uiLanguage: 'en',
-                prompts: [],
-            };
+            return (
+                result[STORAGE_KEYS.SETTINGS] || {
+                    openaiApiKey: '',
+                    provider: 'openai',
+                    customApiUrl: '',
+                    customApiKey: '',
+                    defaultLanguage: 'en',
+                    defaultPolishTemplate: 'professional',
+                    theme: 'dark',
+                    uiLanguage: 'en',
+                    prompts: [],
+                }
+            );
         }
 
         // Fallback for web dev
         const stored = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-        return stored ? JSON.parse(stored) : {
-            openaiApiKey: '',
-            provider: 'openai',
-            customApiUrl: '',
-            customApiKey: '',
-            defaultLanguage: 'en',
-            defaultPolishTemplate: 'professional',
-            theme: 'dark',
-            uiLanguage: 'en',
-            prompts: [],
-        };
+        return stored
+            ? JSON.parse(stored)
+            : {
+                  openaiApiKey: '',
+                  provider: 'openai',
+                  customApiUrl: '',
+                  customApiKey: '',
+                  defaultLanguage: 'en',
+                  defaultPolishTemplate: 'professional',
+                  theme: 'dark',
+                  uiLanguage: 'en',
+                  prompts: [],
+              };
     },
 
     async saveSettings(settings: Settings): Promise<void> {

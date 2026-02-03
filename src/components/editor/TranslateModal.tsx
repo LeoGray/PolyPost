@@ -89,10 +89,11 @@ export const TranslateModal: React.FC<TranslateModalProps> = ({
                                 onClick={() => setSourceMode('source')}
                                 className={`
                   p-3 rounded-lg border text-center transition-all flex flex-col items-center
-                  ${sourceMode === 'source'
-                                        ? 'border-accent bg-accent/10'
-                                        : 'border-border-primary bg-bg-tertiary hover:border-text-muted'
-                                    }
+                  ${
+                      sourceMode === 'source'
+                          ? 'border-accent bg-accent/10'
+                          : 'border-border-primary bg-bg-tertiary hover:border-text-muted'
+                  }
                 `}
                             >
                                 <span className="text-sm text-text-primary">
@@ -103,10 +104,11 @@ export const TranslateModal: React.FC<TranslateModalProps> = ({
                                 onClick={() => setSourceMode('selected')}
                                 className={`
                   p-3 rounded-lg border text-center transition-all flex flex-col items-center
-                  ${sourceMode === 'selected'
-                                        ? 'border-accent bg-accent/10'
-                                        : 'border-border-primary bg-bg-tertiary hover:border-text-muted'
-                                    }
+                  ${
+                      sourceMode === 'selected'
+                          ? 'border-accent bg-accent/10'
+                          : 'border-border-primary bg-bg-tertiary hover:border-text-muted'
+                  }
                 `}
                             >
                                 <span className="text-sm text-text-primary">
@@ -137,14 +139,17 @@ export const TranslateModal: React.FC<TranslateModalProps> = ({
                                 onClick={() => toggleTarget(lang)}
                                 className={`
                   p-3 rounded-lg border text-center transition-all
-                  ${selectedTargets.includes(lang)
-                                        ? 'border-accent bg-accent/10'
-                                        : 'border-border-primary bg-bg-tertiary hover:border-text-muted'
-                                    }
+                  ${
+                      selectedTargets.includes(lang)
+                          ? 'border-accent bg-accent/10'
+                          : 'border-border-primary bg-bg-tertiary hover:border-text-muted'
+                  }
                 `}
                             >
                                 <span className="text-lg">{languageFlags[lang]}</span>
-                                <p className="text-xs text-text-primary mt-1">{LANGUAGE_NAMES[lang]}</p>
+                                <p className="text-xs text-text-primary mt-1">
+                                    {LANGUAGE_NAMES[lang]}
+                                </p>
                             </button>
                         ))}
                     </div>

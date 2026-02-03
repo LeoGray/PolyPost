@@ -1,12 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ArrowLeft, Save, Send } from 'lucide-react';
 import { Button } from '@/components/ui';
-import {
-    SourceEditor,
-    VariantsPanel,
-    PolishModal,
-    TranslateModal,
-} from '@/components/editor';
+import { SourceEditor, VariantsPanel, PolishModal, TranslateModal } from '@/components/editor';
 import { usePostsStore, useSettingsStore, useUIStore } from '@/store';
 import { aiService, DEFAULT_OPENAI_BASE_URL } from '@/services/ai';
 import { ensureHostPermission } from '@/services/permissions';
@@ -24,7 +19,8 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
     const { currentPostId, getPostById, updatePost, addVariant, selectVariant, deleteVariant } =
         usePostsStore();
     const variants = usePostsStore((s) => s.getVariantsByPostId(currentPostId || ''));
-    const { openaiApiKey, provider, customApiKey, customApiUrl, prompts, defaultLanguage } = useSettingsStore();
+    const { openaiApiKey, provider, customApiKey, customApiUrl, prompts, defaultLanguage } =
+        useSettingsStore();
     const {
         isPolishModalOpen,
         isTranslateModalOpen,
@@ -50,16 +46,16 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
     const hasUnsavedChangesRef = useRef(hasUnsavedChanges);
 
     // Fix: Redefine getAiSettings to use explicit checks inside handlers or just simple strings if not added to locale
-    // The previous implementation returned an object with errorMsg. 
+    // The previous implementation returned an object with errorMsg.
     // I haven't added keys for "Please configure your OpenAI API key in Settings".
     // I should probably add them or just use a generic 'editor.save_error' which is "Please enter some content..." - NOT GOOD.
 
-    // Let's stick to the plan: "Replace hardcoded strings". 
+    // Let's stick to the plan: "Replace hardcoded strings".
     // I missed these specific error messages in my `replace_file_content` for locales.
-    // I will use a fallback string or just keep them hardcoded if I missed them? 
-    // No, I should fix it. CONSTANTS? 
-    // Actually, let's look at `en.ts` again. 
-    // I added `editor.save_error`. 
+    // I will use a fallback string or just keep them hardcoded if I missed them?
+    // No, I should fix it. CONSTANTS?
+    // Actually, let's look at `en.ts` again.
+    // I added `editor.save_error`.
 
     // Let's modify `getAiSettings` logic slightly or just use hardcoded strings wrapped in t() if I added them.
     // I didn't add them. I will add them in a separate step or just use `editor.polish_fail` style.
@@ -72,7 +68,7 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
     // I wrote keys for `editor.save_error`, `editor.polish_error`, etc.
     // But not for "Please configure your OpenAI API key".
 
-    // I will use hardcoded strings for now for these specific configuration errors to avoid breaking flow, 
+    // I will use hardcoded strings for now for these specific configuration errors to avoid breaking flow,
     // OR BETTER: I will add them to the locales in a quick follow up or just use a generic "AI Configuration Error".
 
     // Let's proceed with replacing the main UI elements first.
@@ -84,7 +80,9 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
         if (!templateId) return 'Variant';
         const prompt = prompts.find((item) => item.id === templateId);
         if (prompt?.name) return prompt.name;
-        return POLISH_TEMPLATE_NAMES[templateId as keyof typeof POLISH_TEMPLATE_NAMES] || templateId;
+        return (
+            POLISH_TEMPLATE_NAMES[templateId as keyof typeof POLISH_TEMPLATE_NAMES] || templateId
+        );
     };
 
     const selectedVariantLabel = selectedVariant
@@ -176,7 +174,7 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
         }
 
         const { prompts } = useSettingsStore.getState();
-        const selectedPrompt = prompts.find(p => p.id === templateId);
+        const selectedPrompt = prompts.find((p) => p.id === templateId);
 
         if (!selectedPrompt) {
             setError(t('editor.polish_prompt_error'));
@@ -197,7 +195,8 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
 
         const apiKey = provider === 'custom' ? customApiKey : openaiApiKey;
         const baseURL = provider === 'custom' ? customApiUrl : undefined;
-        const permissionBaseUrl = provider === 'custom' ? (customApiUrl || '') : DEFAULT_OPENAI_BASE_URL;
+        const permissionBaseUrl =
+            provider === 'custom' ? customApiUrl || '' : DEFAULT_OPENAI_BASE_URL;
 
         if (!apiKey) {
             // Should not happen due to checks above
@@ -245,7 +244,7 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
 
     const handleTranslate = async (
         targetLanguages: Language[],
-        sourceMode: 'source' | 'selected'
+        sourceMode: 'source' | 'selected',
     ) => {
         const sourceContent =
             sourceMode === 'selected' && selectedVariant?.content
@@ -275,7 +274,8 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
 
         const apiKey = provider === 'custom' ? customApiKey : openaiApiKey;
         const baseURL = provider === 'custom' ? customApiUrl : undefined;
-        const permissionBaseUrl = provider === 'custom' ? (customApiUrl || '') : DEFAULT_OPENAI_BASE_URL;
+        const permissionBaseUrl =
+            provider === 'custom' ? customApiUrl || '' : DEFAULT_OPENAI_BASE_URL;
 
         const permissionResult = await ensureHostPermission(permissionBaseUrl);
         if (!permissionResult.granted) {
@@ -306,7 +306,7 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
                     sourceContent,
                     targetLanguage,
                     apiKey!,
-                    baseURL
+                    baseURL,
                 );
 
                 const newVariant = await addVariant({
@@ -365,11 +365,12 @@ export const Editor: React.FC<EditorProps> = ({ onNavigateBack }) => {
                         <span className="text-xs text-accent bg-accent/10 px-2 py-1 rounded">
                             {selectedVariant.type === 'translation'
                                 ? t(
-                                    'editor.using.translation',
-                                    selectedVariant.language ? LANGUAGE_NAMES[selectedVariant.language] : ''
-                                )
-                                : t('editor.using', getPromptName(selectedVariant.promptTemplate))
-                            }
+                                      'editor.using.translation',
+                                      selectedVariant.language
+                                          ? LANGUAGE_NAMES[selectedVariant.language]
+                                          : '',
+                                  )
+                                : t('editor.using', getPromptName(selectedVariant.promptTemplate))}
                         </span>
                     )}
 

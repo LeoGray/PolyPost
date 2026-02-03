@@ -12,11 +12,41 @@ export const seedMockData = async () => {
 
     // 2. Create Folders
     const folders: Folder[] = [
-        { id: generateId(), name: 'Personal', color: FOLDER_COLORS[0], createdAt: Date.now(), updatedAt: Date.now() },
-        { id: generateId(), name: 'Work', color: FOLDER_COLORS[1], createdAt: Date.now(), updatedAt: Date.now() },
-        { id: generateId(), name: 'Ideas', color: FOLDER_COLORS[2], createdAt: Date.now(), updatedAt: Date.now() },
-        { id: generateId(), name: 'Tech', color: FOLDER_COLORS[3], createdAt: Date.now(), updatedAt: Date.now() },
-        { id: generateId(), name: 'Random', color: FOLDER_COLORS[4], createdAt: Date.now(), updatedAt: Date.now() },
+        {
+            id: generateId(),
+            name: 'Personal',
+            color: FOLDER_COLORS[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+        },
+        {
+            id: generateId(),
+            name: 'Work',
+            color: FOLDER_COLORS[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+        },
+        {
+            id: generateId(),
+            name: 'Ideas',
+            color: FOLDER_COLORS[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+        },
+        {
+            id: generateId(),
+            name: 'Tech',
+            color: FOLDER_COLORS[3],
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+        },
+        {
+            id: generateId(),
+            name: 'Random',
+            color: FOLDER_COLORS[4],
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+        },
     ];
     await storage.saveFolders(folders);
 
@@ -55,7 +85,8 @@ export const seedMockData = async () => {
     posts.push({
         id: mainPostId,
         folderId: folders[3].id,
-        sourceContent: 'Optimizing React performance is key for user experience. Use useMemo and useCallback wisely.',
+        sourceContent:
+            'Optimizing React performance is key for user experience. Use useMemo and useCallback wisely.',
         status: 'posted',
         tags: ['React', 'Dev'],
         campaignId: null,
@@ -100,7 +131,8 @@ export const seedMockData = async () => {
             type: 'polish',
             language: null,
             promptTemplate: 'professional',
-            content: 'Enhancing React performance is crucial for a seamless user experience. Implement useMemo and useCallback strategically.',
+            content:
+                'Enhancing React performance is crucial for a seamless user experience. Implement useMemo and useCallback strategically.',
             aiConfidence: 95,
             description: 'Professional tone',
             isSelected: true,
@@ -112,7 +144,8 @@ export const seedMockData = async () => {
             type: 'polish',
             language: null,
             promptTemplate: 'viral',
-            content: '🚀 Want faster React apps? Stop re-rendering everything! 🛑 Master useMemo and useCallback now! ⚡️ #ReactJS #WebDev',
+            content:
+                '🚀 Want faster React apps? Stop re-rendering everything! 🛑 Master useMemo and useCallback now! ⚡️ #ReactJS #WebDev',
             aiConfidence: 88,
             description: 'Viral hook style',
             isSelected: false,
@@ -124,7 +157,8 @@ export const seedMockData = async () => {
             type: 'polish',
             language: null,
             promptTemplate: 'casual',
-            content: 'Hey devs! 👋 Don\'t forget to optimize your React apps. useMemo and useCallback are your best friends! 😉',
+            content:
+                "Hey devs! 👋 Don't forget to optimize your React apps. useMemo and useCallback are your best friends! 😉",
             aiConfidence: 92,
             description: 'Casual friendly',
             isSelected: false,
@@ -136,7 +170,8 @@ export const seedMockData = async () => {
             type: 'translation',
             language: 'es',
             promptTemplate: null,
-            content: 'Optimizar el rendimiento de React es clave para la experiencia del usuario. Usa useMemo y useCallback sabiamente.',
+            content:
+                'Optimizar el rendimiento de React es clave para la experiencia del usuario. Usa useMemo y useCallback sabiamente.',
             aiConfidence: 99,
             description: 'Spanish translation',
             isSelected: false,

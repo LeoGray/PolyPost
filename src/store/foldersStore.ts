@@ -34,8 +34,8 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
     },
 
     createFolder: async (name: string, color?: string) => {
-        const existingColors = get().folders.map(f => f.color);
-        const availableColors = FOLDER_COLORS.filter(c => !existingColors.includes(c));
+        const existingColors = get().folders.map((f) => f.color);
+        const availableColors = FOLDER_COLORS.filter((c) => !existingColors.includes(c));
         const selectedColor = color || availableColors[0] || FOLDER_COLORS[0];
 
         const folder: Folder = {
@@ -47,27 +47,27 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         };
 
         await storage.addFolder(folder);
-        set(state => ({ folders: [...state.folders, folder] }));
+        set((state) => ({ folders: [...state.folders, folder] }));
         return folder;
     },
 
     updateFolder: async (id: string, updates: Partial<Folder>) => {
         await storage.updateFolder(id, updates);
-        set(state => ({
-            folders: state.folders.map(f =>
-                f.id === id ? { ...f, ...updates, updatedAt: Date.now() } : f
+        set((state) => ({
+            folders: state.folders.map((f) =>
+                f.id === id ? { ...f, ...updates, updatedAt: Date.now() } : f,
             ),
         }));
     },
 
     deleteFolder: async (id: string) => {
         await storage.deleteFolder(id);
-        set(state => ({
-            folders: state.folders.filter(f => f.id !== id),
+        set((state) => ({
+            folders: state.folders.filter((f) => f.id !== id),
         }));
     },
 
     getFolderById: (id: string) => {
-        return get().folders.find(f => f.id === id);
+        return get().folders.find((f) => f.id === id);
     },
 }));
