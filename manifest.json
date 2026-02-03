@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "PolyPost — for Twitter/X",
     "description": "Create, polish, translate, and manage X (Twitter) post variants in a side panel.",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "icons": {
         "16": "icons/icon16.png",
         "48": "icons/icon48.png",
@@ -23,14 +23,6 @@
         "service_worker": "src/background/index.ts",
         "type": "module"
     },
-    "permissions": [
-        "storage",
-        "sidePanel",
-        "tabs",
-        "scripting"
-    ],
-    "optional_host_permissions": [
-        "https://*/*",
-        "http://*/*"
-    ]
+    "permissions": ["storage", "sidePanel", "tabs", "scripting"],
+    "optional_host_permissions": ["https://*/*", "http://*/*"]
 }

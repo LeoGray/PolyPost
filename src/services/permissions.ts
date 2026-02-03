@@ -13,9 +13,7 @@ const matchesOriginPattern = (origin: string, pattern: string) => {
         return true;
     }
 
-    const regex = new RegExp(
-        `^${pattern.split('*').map(escapeRegex).join('.*')}$`,
-    );
+    const regex = new RegExp(`^${pattern.split('*').map(escapeRegex).join('.*')}$`);
     return regex.test(origin);
 };
 

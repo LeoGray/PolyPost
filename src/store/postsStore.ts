@@ -160,8 +160,8 @@ export const usePostsStore = create<PostsState>((set, get) => ({
             posts = posts.filter((p) => p.status === status);
         }
 
-        // Sort by updatedAt descending
-        return posts.sort((a, b) => b.updatedAt - a.updatedAt);
+        // Sort by updatedAt descending without mutating store state
+        return [...posts].sort((a, b) => b.updatedAt - a.updatedAt);
     },
 
     getVariantsByPostId: (postId: string) => {

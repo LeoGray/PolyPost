@@ -216,7 +216,7 @@ export const PromptSettings: React.FC = () => {
         setEditingId(prompt.id);
         setFormData({
             name: prompt.name,
-            description: '',
+            description: prompt.description,
             template: prompt.template,
             content: prompt.content,
         });

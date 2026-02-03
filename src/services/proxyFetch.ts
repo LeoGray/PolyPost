@@ -57,7 +57,7 @@ const readBody = async (
         }
 
         if (ArrayBuffer.isView(init.body)) {
-            return new TextDecoder().decode(init.body.buffer);
+            return new TextDecoder().decode(init.body);
         }
     }
 

@@ -57,8 +57,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
             result = result.filter((p) => p.sourceContent.toLowerCase().includes(query));
         }
 
-        // Sort by updated date
-        return result.sort((a, b) => b.updatedAt - a.updatedAt);
+        // Sort by updated date without mutating store state
+        return [...result].sort((a, b) => b.updatedAt - a.updatedAt);
     }, [posts, selectedFolderId, libraryFilter, searchQuery]);
 
     const handlePostClick = (postId: string) => {

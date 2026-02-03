@@ -11,6 +11,23 @@ const STORAGE_KEYS = {
 // Helper to check if chrome storage is available
 const isExtensionEnv = typeof chrome !== 'undefined' && !!chrome.storage;
 
+const readLocal = <T>(key: string, fallback: T): T => {
+    if (typeof localStorage === 'undefined') {
+        return fallback;
+    }
+
+    const stored = localStorage.getItem(key);
+    return stored ? (JSON.parse(stored) as T) : fallback;
+};
+
+const writeLocal = (key: string, value: unknown): void => {
+    if (typeof localStorage === 'undefined') {
+        return;
+    }
+
+    localStorage.setItem(key, JSON.stringify(value));
+};
+
 /**
  * Chrome Storage API wrapper for data persistence
  * Includes fallback to localStorage for web development
@@ -20,12 +37,21 @@ export const storage = {
     // Posts
     // ============================================
     async getPosts(): Promise<Post[]> {
-        const result = await chrome.storage.local.get(STORAGE_KEYS.POSTS);
-        return result[STORAGE_KEYS.POSTS] || [];
+        if (isExtensionEnv) {
+            const result = await chrome.storage.local.get(STORAGE_KEYS.POSTS);
+            return result[STORAGE_KEYS.POSTS] || [];
+        }
+
+        return readLocal<Post[]>(STORAGE_KEYS.POSTS, []);
     },
 
     async savePosts(posts: Post[]): Promise<void> {
-        await chrome.storage.local.set({ [STORAGE_KEYS.POSTS]: posts });
+        if (isExtensionEnv) {
+            await chrome.storage.local.set({ [STORAGE_KEYS.POSTS]: posts });
+            return;
+        }
+
+        writeLocal(STORAGE_KEYS.POSTS, posts);
     },
 
     async addPost(post: Post): Promise<void> {
@@ -57,12 +83,21 @@ export const storage = {
     // Variants
     // ============================================
     async getVariants(): Promise<Variant[]> {
-        const result = await chrome.storage.local.get(STORAGE_KEYS.VARIANTS);
-        return result[STORAGE_KEYS.VARIANTS] || [];
+        if (isExtensionEnv) {
+            const result = await chrome.storage.local.get(STORAGE_KEYS.VARIANTS);
+            return result[STORAGE_KEYS.VARIANTS] || [];
+        }
+
+        return readLocal<Variant[]>(STORAGE_KEYS.VARIANTS, []);
     },
 
     async saveVariants(variants: Variant[]): Promise<void> {
-        await chrome.storage.local.set({ [STORAGE_KEYS.VARIANTS]: variants });
+        if (isExtensionEnv) {
+            await chrome.storage.local.set({ [STORAGE_KEYS.VARIANTS]: variants });
+            return;
+        }
+
+        writeLocal(STORAGE_KEYS.VARIANTS, variants);
     },
 
     async addVariant(variant: Variant): Promise<void> {
@@ -95,12 +130,21 @@ export const storage = {
     // Folders
     // ============================================
     async getFolders(): Promise<Folder[]> {
-        const result = await chrome.storage.local.get(STORAGE_KEYS.FOLDERS);
-        return result[STORAGE_KEYS.FOLDERS] || [];
+        if (isExtensionEnv) {
+            const result = await chrome.storage.local.get(STORAGE_KEYS.FOLDERS);
+            return result[STORAGE_KEYS.FOLDERS] || [];
+        }
+
+        return readLocal<Folder[]>(STORAGE_KEYS.FOLDERS, []);
     },
 
     async saveFolders(folders: Folder[]): Promise<void> {
-        await chrome.storage.local.set({ [STORAGE_KEYS.FOLDERS]: folders });
+        if (isExtensionEnv) {
+            await chrome.storage.local.set({ [STORAGE_KEYS.FOLDERS]: folders });
+            return;
+        }
+
+        writeLocal(STORAGE_KEYS.FOLDERS, folders);
     },
 
     async addFolder(folder: Folder): Promise<void> {

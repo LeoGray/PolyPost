@@ -102,9 +102,7 @@ const injectFollowersFilter = () => {
                 const label = normalizeText(
                     el.getAttribute('aria-label') || el.textContent,
                 ).toLowerCase();
-                return (
-                    matchesLabel(label, labels.following) || matchesLabel(label, labels.follow)
-                );
+                return matchesLabel(label, labels.following) || matchesLabel(label, labels.follow);
             });
 
             if (match) {
@@ -339,7 +337,9 @@ const injectFollowersFilter = () => {
         const notFollowingToggle = panel.querySelector<HTMLInputElement>(
             '[data-filter="not-following"] input',
         );
-        const verifiedToggle = panel.querySelector<HTMLInputElement>('[data-filter="verified"] input');
+        const verifiedToggle = panel.querySelector<HTMLInputElement>(
+            '[data-filter="verified"] input',
+        );
         const unverifiedToggle = panel.querySelector<HTMLInputElement>(
             '[data-filter="unverified"] input',
         );
@@ -554,7 +554,10 @@ export const FollowersFilter: React.FC = () => {
             const permissionResult = await ensureHostPermission(url.origin);
             if (!permissionResult.granted) {
                 setError(
-                    t('followers_filter.error.permission_denied', permissionResult.origin || url.origin),
+                    t(
+                        'followers_filter.error.permission_denied',
+                        permissionResult.origin || url.origin,
+                    ),
                 );
                 return;
             }
@@ -636,11 +639,7 @@ export const FollowersFilter: React.FC = () => {
                     <Wand2 size={16} className="mr-2" />
                     {t('followers_filter.inject')}
                 </Button>
-                <Button
-                    variant="ghost"
-                    onClick={() => runScript('remove')}
-                    disabled={isWorking}
-                >
+                <Button variant="ghost" onClick={() => runScript('remove')} disabled={isWorking}>
                     {t('followers_filter.remove')}
                 </Button>
                 <div className="flex items-center gap-2 text-xs text-text-muted">
