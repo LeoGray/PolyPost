@@ -59,8 +59,8 @@ export function getPolishPrompt(template: PolishTemplate, content: string): stri
 }
 
 export function getTranslationPrompt(content: string, targetLanguage: Language): string {
-    return TRANSLATION_PROMPT.replace('{content}', content).replace(
-        '{language}',
+    return TRANSLATION_PROMPT.replace(/\{content\}/g, content).replace(
+        /\{language\}/g,
         LANGUAGE_FULL_NAMES[targetLanguage],
     );
 }

@@ -5,6 +5,20 @@ import { ensureHostPermission } from '@/services/permissions';
 import { ExternalLink, Wand2 } from 'lucide-react';
 
 type ListType = 'followers' | 'verified_followers' | 'following';
+type PanelCopy = {
+    title: string;
+    filters: {
+        fans: string;
+        notFollowing: string;
+        verified: string;
+        unverified: string;
+    };
+    actions: {
+        apply: string;
+        reset: string;
+    };
+    hint: string;
+};
 
 const X_HOSTS = ['x.com', 'twitter.com'];
 
@@ -15,7 +29,7 @@ const isXDomain = (url: URL) => {
     return X_HOSTS.some((domain) => host === domain || host.endsWith(`.${domain}`));
 };
 
-const injectFollowersFilter = () => {
+const injectFollowersFilter = (copy?: PanelCopy) => {
     const win = window as any;
     if (win.__polypostXFilterInitialized) {
         if (typeof win.__polypostXFilterApply === 'function') {
@@ -37,6 +51,21 @@ const injectFollowersFilter = () => {
         notFollowingBack: false,
         verifiedOnly: false,
         unverifiedOnly: false,
+    };
+
+    const panelCopy: PanelCopy = copy || {
+        title: 'PolyPost Follower Filter',
+        filters: {
+            fans: "Show followers you don't follow back",
+            notFollowing: "Show following who don't follow back",
+            verified: 'Verified only',
+            unverified: 'Unverified only',
+        },
+        actions: {
+            apply: 'Refresh',
+            reset: 'Reset',
+        },
+        hint: 'Auto-refresh after you scroll to load more',
     };
 
     const normalizeText = (value: string | null | undefined) =>
@@ -229,6 +258,42 @@ const injectFollowersFilter = () => {
         });
     };
 
+    const applyFiltersToCells = (cells: HTMLElement[]) => {
+        const listType = getListType();
+        if (!listType || cells.length === 0) {
+            return;
+        }
+
+        cells.forEach((cell) => {
+            const hide = shouldHide(cell, listType);
+            cell.style.display = hide ? 'none' : '';
+        });
+    };
+
+    const collectUserCells = (nodes: NodeList | Node[]): HTMLElement[] => {
+        const collected: HTMLElement[] = [];
+        nodes.forEach((node) => {
+            if (!(node instanceof HTMLElement)) {
+                return;
+            }
+
+            if (node.matches?.('[data-testid="UserCell"]')) {
+                collected.push(node);
+                return;
+            }
+
+            const nested = node.querySelectorAll?.('[data-testid="UserCell"]');
+            if (nested && nested.length > 0) {
+                const nestedCells = Array.from(nested).filter(
+                    (item): item is HTMLElement => item instanceof HTMLElement,
+                );
+                collected.push(...nestedCells);
+            }
+        });
+
+        return collected;
+    };
+
     const ensureStyles = () => {
         if (document.getElementById(STYLE_ID)) {
             return;
@@ -307,28 +372,28 @@ const injectFollowersFilter = () => {
         panel.id = PANEL_ID;
 
         panel.innerHTML = `
-            <div class="pp-title">PolyPost 关注过滤</div>
+            <div class="pp-title">${panelCopy.title}</div>
             <label class="pp-option" data-filter="fans">
                 <input type="checkbox" />
-                <span>只看对方关注我但我未关注</span>
+                <span>${panelCopy.filters.fans}</span>
             </label>
             <label class="pp-option" data-filter="not-following">
                 <input type="checkbox" />
-                <span>只看我关注但未回关</span>
+                <span>${panelCopy.filters.notFollowing}</span>
             </label>
             <label class="pp-option" data-filter="verified">
                 <input type="checkbox" />
-                <span>只看蓝标</span>
+                <span>${panelCopy.filters.verified}</span>
             </label>
             <label class="pp-option" data-filter="unverified">
                 <input type="checkbox" />
-                <span>只看非蓝标</span>
+                <span>${panelCopy.filters.unverified}</span>
             </label>
             <div class="pp-actions">
-                <button class="pp-button" data-action="apply">刷新</button>
-                <button class="pp-button secondary" data-action="reset">重置</button>
+                <button class="pp-button" data-action="apply">${panelCopy.actions.apply}</button>
+                <button class="pp-button secondary" data-action="reset">${panelCopy.actions.reset}</button>
             </div>
-            <div class="pp-hint">滚动加载更多后会自动刷新</div>
+            <div class="pp-hint">${panelCopy.hint}</div>
         `;
 
         document.body.appendChild(panel);
@@ -350,7 +415,7 @@ const injectFollowersFilter = () => {
             fansToggle.checked = state.fansNotFollowed;
             fansToggle.addEventListener('change', () => {
                 state.fansNotFollowed = fansToggle.checked;
-                scheduleApply();
+                scheduleApplyFull();
             });
         }
 
@@ -358,7 +423,7 @@ const injectFollowersFilter = () => {
             notFollowingToggle.checked = state.notFollowingBack;
             notFollowingToggle.addEventListener('change', () => {
                 state.notFollowingBack = notFollowingToggle.checked;
-                scheduleApply();
+                scheduleApplyFull();
             });
         }
 
@@ -370,7 +435,7 @@ const injectFollowersFilter = () => {
                     state.unverifiedOnly = false;
                     unverifiedToggle.checked = false;
                 }
-                scheduleApply();
+                scheduleApplyFull();
             });
         }
 
@@ -382,13 +447,13 @@ const injectFollowersFilter = () => {
                     state.verifiedOnly = false;
                     verifiedToggle.checked = false;
                 }
-                scheduleApply();
+                scheduleApplyFull();
             });
         }
 
         if (applyButton) {
             applyButton.addEventListener('click', () => {
-                scheduleApply();
+                scheduleApplyFull();
             });
         }
 
@@ -410,7 +475,7 @@ const injectFollowersFilter = () => {
                 if (unverifiedToggle) {
                     unverifiedToggle.checked = false;
                 }
-                scheduleApply();
+                scheduleApplyFull();
             });
         }
     };
@@ -440,7 +505,7 @@ const injectFollowersFilter = () => {
     };
 
     let scheduled = false;
-    const scheduleApply = () => {
+    const scheduleApplyFull = () => {
         if (scheduled) {
             return;
         }
@@ -453,8 +518,46 @@ const injectFollowersFilter = () => {
         });
     };
 
-    const observer = new MutationObserver(() => {
-        scheduleApply();
+    let pendingCells = new Set<HTMLElement>();
+    let pendingTimer: number | null = null;
+    const scheduleApplyForCells = (cells: HTMLElement[]) => {
+        if (cells.length === 0) {
+            return;
+        }
+
+        cells.forEach((cell) => pendingCells.add(cell));
+
+        if (pendingTimer !== null) {
+            return;
+        }
+
+        pendingTimer = window.setTimeout(() => {
+            pendingTimer = null;
+            const batch = Array.from(pendingCells);
+            pendingCells.clear();
+            if (batch.length === 0) {
+                return;
+            }
+
+            const run = () => applyFiltersToCells(batch);
+            if ('requestIdleCallback' in window) {
+                (window as any).requestIdleCallback(run, { timeout: 200 });
+            } else {
+                run();
+            }
+        }, 150);
+    };
+
+    const observer = new MutationObserver((mutations) => {
+        const addedNodes: Node[] = [];
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => addedNodes.push(node));
+        });
+
+        const newCells = collectUserCells(addedNodes);
+        if (newCells.length > 0) {
+            scheduleApplyForCells(newCells);
+        }
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
@@ -462,7 +565,7 @@ const injectFollowersFilter = () => {
     const routeInterval = window.setInterval(() => {
         if (win.__polypostXFilterLastUrl !== window.location.href) {
             win.__polypostXFilterLastUrl = window.location.href;
-            scheduleApply();
+            scheduleApplyFull();
         }
     }, 800);
 
@@ -478,7 +581,7 @@ const injectFollowersFilter = () => {
     };
 
     win.__polypostXFilterInitialized = true;
-    win.__polypostXFilterApply = scheduleApply;
+    win.__polypostXFilterApply = scheduleApplyFull;
     win.__polypostXFilterCleanup = cleanup;
     win.__polypostXFilterLastUrl = window.location.href;
 
@@ -562,9 +665,25 @@ export const FollowersFilter: React.FC = () => {
                 return;
             }
 
+            const panelCopy: PanelCopy = {
+                title: t('followers_filter.panel.title'),
+                filters: {
+                    fans: t('followers_filter.panel.fans'),
+                    notFollowing: t('followers_filter.panel.not_following'),
+                    verified: t('followers_filter.panel.verified'),
+                    unverified: t('followers_filter.panel.unverified'),
+                },
+                actions: {
+                    apply: t('followers_filter.panel.apply'),
+                    reset: t('followers_filter.panel.reset'),
+                },
+                hint: t('followers_filter.panel.hint'),
+            };
+
             await chrome.scripting.executeScript({
                 target: { tabId: tab.id },
                 func: action === 'inject' ? injectFollowersFilter : removeFollowersFilter,
+                args: action === 'inject' ? [panelCopy] : [],
             });
 
             setStatus(

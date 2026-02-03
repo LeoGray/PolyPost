@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Sidebar, Header } from '@/components/layout';
 import { PostGrid, FolderModal, DeleteFolderModal } from '@/components/library';
 import { Button } from '@/components/ui';
@@ -18,16 +18,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
     onNavigateToEditor,
     onNavigateToSettings,
 }) => {
-    const { posts, variants, loadPosts, createPost, setCurrentPost, isLoading } = usePostsStore();
-    const { folders, loadFolders } = useFoldersStore();
+    const { posts, variants, createPost, setCurrentPost, isLoading } = usePostsStore();
+    const { folders } = useFoldersStore();
     const { libraryFilter, selectedFolderId, searchQuery, dashboardView } = useUIStore();
     const { t } = useTranslation();
-
-    // Load data on mount
-    useEffect(() => {
-        loadPosts();
-        loadFolders();
-    }, [loadPosts, loadFolders]);
 
     // Filter posts
     const filteredPosts = useMemo(() => {

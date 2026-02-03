@@ -96,7 +96,7 @@ export const zh = {
     'followers_filter.title': '关注过滤',
     'followers_filter.subtitle': '在 X 的粉丝/关注列表页注入过滤面板。',
     'followers_filter.handle.label': 'X 用户名',
-    'followers_filter.handle.placeholder': 'LeoGray',
+    'followers_filter.handle.placeholder': 'Your x user name',
     'followers_filter.open.followers': '打开粉丝页',
     'followers_filter.open.verified_followers': '打开认证粉丝',
     'followers_filter.open.following': '打开关注页',
@@ -112,6 +112,14 @@ export const zh = {
     'followers_filter.error.not_x': '请打开 X (x.com) 页面。',
     'followers_filter.error.permission_denied': '访问权限被拒绝：{0}',
     'followers_filter.error.failed': '注入失败，请重试。',
+    'followers_filter.panel.title': 'PolyPost 关注过滤',
+    'followers_filter.panel.fans': '只看对方关注我但我未关注',
+    'followers_filter.panel.not_following': '只看我关注但未回关',
+    'followers_filter.panel.verified': '只看蓝标',
+    'followers_filter.panel.unverified': '只看非蓝标',
+    'followers_filter.panel.apply': '刷新',
+    'followers_filter.panel.reset': '重置',
+    'followers_filter.panel.hint': '滚动加载更多后会自动刷新',
 
     // Settings
     'settings.title': '设置',

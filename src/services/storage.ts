@@ -17,7 +17,16 @@ const readLocal = <T>(key: string, fallback: T): T => {
     }
 
     const stored = localStorage.getItem(key);
-    return stored ? (JSON.parse(stored) as T) : fallback;
+    if (!stored) {
+        return fallback;
+    }
+
+    try {
+        return JSON.parse(stored) as T;
+    } catch (error) {
+        console.warn(`Failed to parse localStorage key "${key}". Resetting to defaults.`, error);
+        return fallback;
+    }
 };
 
 const writeLocal = (key: string, value: unknown): void => {

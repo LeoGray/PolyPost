@@ -97,7 +97,7 @@ export const en = {
     'followers_filter.title': 'Follower Filter',
     'followers_filter.subtitle': 'Inject an in-page filter on X follower lists.',
     'followers_filter.handle.label': 'X username',
-    'followers_filter.handle.placeholder': 'LeoGray',
+    'followers_filter.handle.placeholder': 'Your x user name',
     'followers_filter.open.followers': 'Open Followers',
     'followers_filter.open.verified_followers': 'Open Verified Followers',
     'followers_filter.open.following': 'Open Following',
@@ -113,6 +113,14 @@ export const en = {
     'followers_filter.error.not_x': 'Please open an X (x.com) page.',
     'followers_filter.error.permission_denied': 'Permission denied for {0}.',
     'followers_filter.error.failed': 'Failed to inject filter. Please try again.',
+    'followers_filter.panel.title': 'PolyPost Follower Filter',
+    'followers_filter.panel.fans': "Show followers you don't follow back",
+    'followers_filter.panel.not_following': "Show following who don't follow back",
+    'followers_filter.panel.verified': 'Verified only',
+    'followers_filter.panel.unverified': 'Unverified only',
+    'followers_filter.panel.apply': 'Refresh',
+    'followers_filter.panel.reset': 'Reset',
+    'followers_filter.panel.hint': 'Auto-refresh after you scroll to load more',
 
     // Settings
     'settings.title': 'Settings',
