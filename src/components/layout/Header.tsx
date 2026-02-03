@@ -8,9 +8,17 @@ interface HeaderProps {
     onNewPost: () => void;
     onSettings: () => void;
     showNewPost?: boolean;
+    showSearch?: boolean;
+    showViewToggle?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onNewPost, onSettings, showNewPost = true }) => {
+export const Header: React.FC<HeaderProps> = ({
+    onNewPost,
+    onSettings,
+    showNewPost = true,
+    showSearch = true,
+    showViewToggle = true,
+}) => {
     const { viewMode, setViewMode, searchQuery, setSearchQuery } = useUIStore();
     const { uiLanguage, setUiLanguage } = useSettingsStore();
     const { t } = useTranslation();
@@ -22,49 +30,57 @@ export const Header: React.FC<HeaderProps> = ({ onNewPost, onSettings, showNewPo
     return (
         <header className="h-16 bg-bg-primary border-b border-border-primary flex items-center justify-between px-6">
             {/* Search */}
-            <div className="flex-1 max-w-xl">
-                <div className="relative">
-                    <Search
-                        size={18}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
-                    />
-                    <input
-                        type="text"
-                        placeholder={t('dashboard.search')}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-bg-secondary border border-border-primary rounded-lg
+            {showSearch ? (
+                <div className="flex-1 max-w-xl">
+                    <div className="relative">
+                        <Search
+                            size={18}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
+                        />
+                        <input
+                            type="text"
+                            placeholder={t('dashboard.search')}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 bg-bg-secondary border border-border-primary rounded-lg
               text-text-primary placeholder-text-muted text-sm
               focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-                    />
+                        />
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div className="flex-1" />
+            )}
 
             {/* Right side */}
             <div className="flex items-center gap-3 ml-4">
                 {/* View mode toggle */}
-                <div className="flex items-center bg-bg-secondary border border-border-primary rounded-lg p-1">
-                    <button
-                        onClick={() => setViewMode('grid')}
-                        className={`p-1.5 rounded transition-colors ${viewMode === 'grid'
-                            ? 'bg-bg-tertiary text-text-primary'
-                            : 'text-text-muted hover:text-text-primary'
+                {showViewToggle && (
+                    <div className="flex items-center bg-bg-secondary border border-border-primary rounded-lg p-1">
+                        <button
+                            onClick={() => setViewMode('grid')}
+                            className={`p-1.5 rounded transition-colors ${
+                                viewMode === 'grid'
+                                    ? 'bg-bg-tertiary text-text-primary'
+                                    : 'text-text-muted hover:text-text-primary'
                             }`}
-                        title="Grid view"
-                    >
-                        <Grid size={18} />
-                    </button>
-                    <button
-                        onClick={() => setViewMode('list')}
-                        className={`p-1.5 rounded transition-colors ${viewMode === 'list'
-                            ? 'bg-bg-tertiary text-text-primary'
-                            : 'text-text-muted hover:text-text-primary'
+                            title="Grid view"
+                        >
+                            <Grid size={18} />
+                        </button>
+                        <button
+                            onClick={() => setViewMode('list')}
+                            className={`p-1.5 rounded transition-colors ${
+                                viewMode === 'list'
+                                    ? 'bg-bg-tertiary text-text-primary'
+                                    : 'text-text-muted hover:text-text-primary'
                             }`}
-                        title="List view"
-                    >
-                        <List size={18} />
-                    </button>
-                </div>
+                            title="List view"
+                        >
+                            <List size={18} />
+                        </button>
+                    </div>
+                )}
 
                 {/* New Post button */}
                 {showNewPost && (

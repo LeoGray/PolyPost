@@ -10,11 +10,11 @@ import {
     Monitor,
     Edit2,
     Trash2,
+    Languages,
 } from 'lucide-react';
 import { useFoldersStore, useUIStore, usePostsStore, useSettingsStore } from '@/store';
 import type { LibraryFilter } from '@/types';
 import { useTranslation } from '@/hooks/useTranslation';
-
 
 export const Sidebar: React.FC = () => {
     const { folders } = useFoldersStore();
@@ -59,9 +59,15 @@ export const Sidebar: React.FC = () => {
             {/* Logo */}
             <div className="h-16 px-2 sm:px-4 border-b border-border-primary flex items-center justify-center sm:justify-start gap-2">
                 <div className="w-8 h-8 flex items-center justify-center overflow-hidden rounded-lg">
-                    <img src="/icons/icon48.png" alt="PolyPost Logo" className="w-full h-full object-cover" />
+                    <img
+                        src="/icons/icon48.png"
+                        alt="PolyPost Logo"
+                        className="w-full h-full object-cover"
+                    />
                 </div>
-                <span className="text-text-primary font-semibold text-lg hidden sm:inline">{t('app.name')}</span>
+                <span className="text-text-primary font-semibold text-lg hidden sm:inline">
+                    {t('app.name')}
+                </span>
             </div>
 
             {/* Library Section */}
@@ -81,10 +87,11 @@ export const Sidebar: React.FC = () => {
                   w-full flex items-center px-2 sm:px-3 py-2 rounded-lg text-sm
                   justify-center sm:justify-start gap-0 sm:gap-3
                   transition-colors duration-150
-                  ${libraryFilter === item.id && !selectedFolderId
-                                        ? 'bg-bg-tertiary text-text-primary'
-                                        : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary'
-                                    }
+                  ${
+                      libraryFilter === item.id && !selectedFolderId
+                          ? 'bg-bg-tertiary text-text-primary'
+                          : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary'
+                  }
                 `}
                             >
                                 {item.icon}
@@ -111,9 +118,10 @@ export const Sidebar: React.FC = () => {
                             w-full flex items-center px-2 sm:px-3 py-2 rounded-lg text-sm
                             justify-center sm:justify-start gap-0 sm:gap-3
                             transition-colors duration-150
-                            ${dashboardView === 'prompts'
-                                ? 'bg-bg-tertiary text-text-primary'
-                                : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary'
+                            ${
+                                dashboardView === 'prompts'
+                                    ? 'bg-bg-tertiary text-text-primary'
+                                    : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary'
                             }
                         `}
                     >
@@ -121,6 +129,30 @@ export const Sidebar: React.FC = () => {
                             <span className="text-lg leading-none">✨</span>
                         </div>
                         <span className="hidden sm:inline">{t('nav.prompts')}</span>
+                    </button>
+                </div>
+
+                {/* Quick Translate Section */}
+                <div className="mt-2 px-2">
+                    <button
+                        onClick={() => {
+                            setDashboardView('translate');
+                        }}
+                        aria-label={t('nav.quick_translate')}
+                        title={t('nav.quick_translate')}
+                        className={`
+                            w-full flex items-center px-2 sm:px-3 py-2 rounded-lg text-sm
+                            justify-center sm:justify-start gap-0 sm:gap-3
+                            transition-colors duration-150
+                            ${
+                                dashboardView === 'translate'
+                                    ? 'bg-bg-tertiary text-text-primary'
+                                    : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary'
+                            }
+                        `}
+                    >
+                        <Languages size={18} />
+                        <span className="hidden sm:inline">{t('nav.quick_translate')}</span>
                     </button>
                 </div>
 
@@ -142,7 +174,9 @@ export const Sidebar: React.FC = () => {
 
                     <nav className="space-y-1 mt-2">
                         {folders.map((folder) => {
-                            const folderPostCount = posts.filter((p) => p.folderId === folder.id).length;
+                            const folderPostCount = posts.filter(
+                                (p) => p.folderId === folder.id,
+                            ).length;
                             const isSelected = selectedFolderId === folder.id;
 
                             return (
@@ -150,9 +184,10 @@ export const Sidebar: React.FC = () => {
                                     key={folder.id}
                                     className={`
                                         group relative flex items-center w-full rounded-lg transition-colors duration-150
-                                        ${isSelected
-                                            ? 'bg-bg-tertiary text-text-primary'
-                                            : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary'
+                                        ${
+                                            isSelected
+                                                ? 'bg-bg-tertiary text-text-primary'
+                                                : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary'
                                         }
                                     `}
                                 >
@@ -163,9 +198,13 @@ export const Sidebar: React.FC = () => {
                                         className="flex-1 flex items-center justify-center sm:justify-start gap-0 sm:gap-3 px-2 sm:px-3 py-2 text-sm overflow-hidden"
                                     >
                                         <Folder size={18} style={{ color: folder.color }} />
-                                        <span className="truncate hidden sm:inline">{folder.name}</span>
+                                        <span className="truncate hidden sm:inline">
+                                            {folder.name}
+                                        </span>
                                         {folderPostCount > 0 && (
-                                            <span className="ml-auto text-text-muted text-xs hidden sm:inline">{folderPostCount}</span>
+                                            <span className="ml-auto text-text-muted text-xs hidden sm:inline">
+                                                {folderPostCount}
+                                            </span>
                                         )}
                                     </button>
                                     <span className="absolute left-full ml-2 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs bg-bg-tertiary text-text-primary px-2 py-1 rounded border border-border-primary shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity sm:hidden">
@@ -212,9 +251,10 @@ export const Sidebar: React.FC = () => {
                         onClick={() => setTheme('light')}
                         className={`
                             w-full sm:flex-1 flex items-center justify-center p-1.5 rounded-md transition-all duration-200
-                            ${theme === 'light'
-                                ? 'bg-bg-primary text-accent shadow-sm'
-                                : 'text-text-secondary hover:text-text-primary'
+                            ${
+                                theme === 'light'
+                                    ? 'bg-bg-primary text-accent shadow-sm'
+                                    : 'text-text-secondary hover:text-text-primary'
                             }
                         `}
                         title="Light Mode"
@@ -225,9 +265,10 @@ export const Sidebar: React.FC = () => {
                         onClick={() => setTheme('dark')}
                         className={`
                             w-full sm:flex-1 flex items-center justify-center p-1.5 rounded-md transition-all duration-200
-                            ${theme === 'dark'
-                                ? 'bg-bg-primary text-accent shadow-sm'
-                                : 'text-text-secondary hover:text-text-primary'
+                            ${
+                                theme === 'dark'
+                                    ? 'bg-bg-primary text-accent shadow-sm'
+                                    : 'text-text-secondary hover:text-text-primary'
                             }
                         `}
                         title="Dark Mode"
@@ -238,9 +279,10 @@ export const Sidebar: React.FC = () => {
                         onClick={() => setTheme('system')}
                         className={`
                             w-full sm:flex-1 flex items-center justify-center p-1.5 rounded-md transition-all duration-200
-                            ${theme === 'system'
-                                ? 'bg-bg-primary text-accent shadow-sm'
-                                : 'text-text-secondary hover:text-text-primary'
+                            ${
+                                theme === 'system'
+                                    ? 'bg-bg-primary text-accent shadow-sm'
+                                    : 'text-text-secondary hover:text-text-primary'
                             }
                         `}
                         title="System Theme"

@@ -4,6 +4,7 @@ import { PostGrid, FolderModal, DeleteFolderModal } from '@/components/library';
 import { Button } from '@/components/ui';
 import { Plus } from 'lucide-react';
 import { PromptSettings } from './PromptSettings';
+import { QuickTranslate } from './QuickTranslate';
 import { usePostsStore, useFoldersStore, useUIStore } from '@/store';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -16,14 +17,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     onNavigateToEditor,
     onNavigateToSettings,
 }) => {
-    const {
-        posts,
-        variants,
-        loadPosts,
-        createPost,
-        setCurrentPost,
-        isLoading,
-    } = usePostsStore();
+    const { posts, variants, loadPosts, createPost, setCurrentPost, isLoading } = usePostsStore();
     const { folders, loadFolders } = useFoldersStore();
     const { libraryFilter, selectedFolderId, searchQuery, dashboardView } = useUIStore();
     const { t } = useTranslation();
@@ -59,9 +53,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         // Search filter
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
-            result = result.filter((p) =>
-                p.sourceContent.toLowerCase().includes(query)
-            );
+            result = result.filter((p) => p.sourceContent.toLowerCase().includes(query));
         }
 
         // Sort by updated date
@@ -96,7 +88,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         }
     };
 
-    // const isLibraryView = !selectedFolderId;
+    const isTranslateView = dashboardView === 'translate';
 
     return (
         <div className="flex h-screen bg-bg-primary">
@@ -107,11 +99,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     onNewPost={handleCreateNew}
                     onSettings={onNavigateToSettings}
                     showNewPost={false}
+                    showSearch={!isTranslateView}
+                    showViewToggle={!isTranslateView}
                 />
 
                 <main className="flex-1 overflow-y-auto p-6">
                     {/* Page header - Hide for prompts view as it handles its own header */}
-                    {dashboardView !== 'prompts' && (
+                    {dashboardView === 'posts' && (
                         <div className="mb-6">
                             <div className="flex items-center justify-between">
                                 <h1 className="text-2xl font-bold text-text-primary">
@@ -125,9 +119,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                     {t('nav.new_post')}
                                 </Button>
                             </div>
-                            <p className="text-text-muted mt-1">
-                                {t('dashboard.subtitle')}
-                            </p>
+                            <p className="text-text-muted mt-1">{t('dashboard.subtitle')}</p>
                         </div>
                     )}
 
@@ -136,17 +128,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         <div className="flex items-center justify-center h-64">
                             <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full" />
                         </div>
+                    ) : dashboardView === 'prompts' ? (
+                        <PromptSettings />
+                    ) : dashboardView === 'translate' ? (
+                        <QuickTranslate />
                     ) : (
-                        dashboardView === 'prompts' ? (
-                            <PromptSettings />
-                        ) : (
-                            <PostGrid
-                                posts={filteredPosts}
-                                variants={variants}
-                                onPostClick={handlePostClick}
-                                onCreateNew={handleCreateNew}
-                            />
-                        )
+                        <PostGrid
+                            posts={filteredPosts}
+                            variants={variants}
+                            onPostClick={handlePostClick}
+                            onCreateNew={handleCreateNew}
+                        />
                     )}
                 </main>
             </div>

@@ -9,6 +9,7 @@ export const en = {
     'nav.settings': 'Settings',
     'nav.new_post': 'New Post',
     'nav.folders': 'Folders',
+    'nav.quick_translate': 'Quick Translate',
     'actions.create': 'Create',
     'actions.edit': 'Edit',
     'actions.copy': 'Copy',
@@ -47,8 +48,10 @@ export const en = {
     'editor.translate_fail': 'Failed to translate content',
     'editor.api_key_missing_openai': 'Please configure your LLM API key in Settings',
     'editor.api_key_missing_custom': 'Please configure your Custom API settings in Settings',
-    'editor.permission.invalid_url': 'Invalid API Base URL. Please use a full http:// or https:// URL.',
-    'editor.permission.denied': 'Permission required to access {0}. Please allow it in the browser prompt.',
+    'editor.permission.invalid_url':
+        'Invalid API Base URL. Please use a full http:// or https:// URL.',
+    'editor.permission.denied':
+        'Permission required to access {0}. Please allow it in the browser prompt.',
     'editor.permission.not_allowed': 'This domain is not in the allowlist for this build: {0}',
     'editor.variants.empty': 'No variants yet.',
     'editor.variants.empty_desc': 'Use AI Polish or Translate to generate variants.',
@@ -72,10 +75,22 @@ export const en = {
     'editor.translate.progress': 'Translating',
     'editor.translate.auto_detect': 'Auto-detects source language',
     'editor.translate.multi_select': 'Select multiple targets',
-    'editor.source.placeholder_text': "Just launched our new feature! It helps you manage multiple variants of your tweets effortlessly.\n\nThis is going to change how teams collaborate on social content. #SaaS #Productivity",
+    'editor.source.placeholder_text':
+        'Just launched our new feature! It helps you manage multiple variants of your tweets effortlessly.\n\nThis is going to change how teams collaborate on social content. #SaaS #Productivity',
     'editor.ai_polish': 'Polish',
     'editor.translate': 'Translate',
     'editor.char_count': '{0}/{1}',
+
+    // Quick Translate
+    'quick_translate.title': 'Quick Translate',
+    'quick_translate.subtitle': 'Translate without creating posts. Great for quick replies.',
+    'quick_translate.target_language': 'Target language',
+    'quick_translate.source.label': 'Your reply',
+    'quick_translate.source.placeholder': 'Type your reply...',
+    'quick_translate.target.label': 'Translation',
+    'quick_translate.target.placeholder': 'Translation will appear here',
+    'quick_translate.translate': 'Translate',
+    'quick_translate.clear': 'Clear',
 
     // Settings
     'settings.title': 'Settings',
@@ -98,7 +113,8 @@ export const en = {
     'settings.provider.label': 'LLM Provider',
     'settings.provider.openai': 'OpenAI',
     'settings.provider.custom': 'Custom (OpenAI Compatible)',
-    'settings.permission_hint': 'When you use a new API domain for the first time, Chrome will ask for permission to access it.',
+    'settings.permission_hint':
+        'When you use a new API domain for the first time, Chrome will ask for permission to access it.',
     'settings.customUrl.label': 'API Base URL',
     'settings.customUrl.placeholder': 'https://api.example.com/v1',
     'settings.customKey.label': 'API Key',

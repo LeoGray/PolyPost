@@ -16,7 +16,7 @@ export const FolderModal: React.FC = () => {
     // Populate form when editing
     useEffect(() => {
         if (isFolderModalOpen && folderModalMode === 'edit' && editingFolderId) {
-            const folder = folders.find(f => f.id === editingFolderId);
+            const folder = folders.find((f) => f.id === editingFolderId);
             if (folder) {
                 setName(folder.name);
                 setSelectedColor(folder.color);
@@ -28,7 +28,7 @@ export const FolderModal: React.FC = () => {
             setName('');
             setSelectedColor(availableColors[0] || initialColor);
         }
-    }, [isFolderModalOpen, folderModalMode, editingFolderId, folders]);
+    }, [isFolderModalOpen, folderModalMode, editingFolderId, folders, initialColor]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,7 +39,7 @@ export const FolderModal: React.FC = () => {
             if (folderModalMode === 'edit' && editingFolderId) {
                 await updateFolder(editingFolderId, {
                     name: name.trim(),
-                    color: selectedColor
+                    color: selectedColor,
                 });
             } else {
                 await createFolder(name.trim(), selectedColor);

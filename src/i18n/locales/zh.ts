@@ -10,6 +10,7 @@ export const zh = {
     'nav.settings': '设置',
     'nav.new_post': '新建帖子',
     'nav.folders': '文件夹',
+    'nav.quick_translate': '快速翻译',
     'actions.create': '新建',
     'actions.edit': '编辑',
     'actions.copy': '复制',
@@ -73,10 +74,22 @@ export const zh = {
     'editor.translate.progress': '翻译中',
     'editor.translate.auto_detect': '自动识别源语言',
     'editor.translate.multi_select': '可多选目标语言',
-    'editor.source.placeholder_text': "刚刚发布了我们的新功能！它可以帮助您轻松管理推文的多个变体。\n\n这将改变团队协作社交内容的方式。#SaaS #生产力",
+    'editor.source.placeholder_text':
+        '刚刚发布了我们的新功能！它可以帮助您轻松管理推文的多个变体。\n\n这将改变团队协作社交内容的方式。#SaaS #生产力',
     'editor.ai_polish': '润色',
     'editor.translate': '翻译',
     'editor.char_count': '{0}/{1}',
+
+    // Quick Translate
+    'quick_translate.title': '快速翻译',
+    'quick_translate.subtitle': '仅用于临时翻译，不会创建帖子或变体。',
+    'quick_translate.target_language': '目标语言',
+    'quick_translate.source.label': '你的回复',
+    'quick_translate.source.placeholder': '请输入你的回复...',
+    'quick_translate.target.label': '译文',
+    'quick_translate.target.placeholder': '译文将显示在这里',
+    'quick_translate.translate': '翻译',
+    'quick_translate.clear': '清空',
 
     // Settings
     'settings.title': '设置',
