@@ -144,6 +144,23 @@ Thumbs.db
 *.swp
 *.swo
 
+# Xcode / Safari Web Extension local build artifacts
+safari-build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcuserstate
+*.ipa
+*.dSYM
+
+# Apple signing / provisioning files
+*.mobileprovision
+*.p12
+*.p8
+*.cer
+*.key
+*.pem
+
 # Local agent instructions
 AGENTS.md
 CLAUDE.md

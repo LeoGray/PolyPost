@@ -12,7 +12,7 @@ const reactHooksRecommendedRules = reactHooksPlugin.configs.flat?.recommended?.r
 
 export default [
     {
-        ignores: ['dist/**', 'node_modules/**', 'snapshot/**', 'public/**'],
+        ignores: ['dist/**', 'node_modules/**', 'snapshot/**', 'public/**', 'safari-build/**'],
     },
     js.configs.recommended,
     {

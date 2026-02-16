@@ -1,3 +1,5 @@
+import { getWebExt } from '@/services/webext';
+
 export const OPTIONAL_HOST_ORIGINS = [
     'https://*/*',
     'http://*/*',
@@ -54,17 +56,18 @@ export const ensureHostPermission = async (
         return { granted: false, origin, reason: 'not_allowed' };
     }
 
-    if (typeof chrome === 'undefined' || !chrome.permissions) {
+    const webext = getWebExt();
+    if (!webext?.permissions) {
         return { granted: true, origin };
     }
 
-    const alreadyGranted = await chrome.permissions.contains({ origins: [origin] });
+    const alreadyGranted = await webext.permissions.contains({ origins: [origin] });
     if (alreadyGranted) {
         return { granted: true, origin };
     }
 
     try {
-        const granted = await chrome.permissions.request({ origins: [origin] });
+        const granted = await webext.permissions.request({ origins: [origin] });
         return granted ? { granted: true, origin } : { granted: false, origin, reason: 'denied' };
     } catch {
         return { granted: false, origin, reason: 'denied' };

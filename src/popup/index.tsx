@@ -1,15 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import '@/styles/globals.css';
+import { openPolyPostForCurrentTab } from '@/services/webext';
 
 const Popup: React.FC = () => {
     const openSidePanel = () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0]?.id) {
-                chrome.sidePanel.open({ tabId: tabs[0].id });
+        openPolyPostForCurrentTab()
+            .then(() => {
                 window.close();
-            }
-        });
+            })
+            .catch((error) => {
+                console.error('Failed to open PolyPost', error);
+            });
     };
 
     return (

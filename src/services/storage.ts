@@ -1,4 +1,5 @@
 import type { Post, Variant, Folder, Settings } from '@/types';
+import { getWebExt } from '@/services/webext';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -7,9 +8,6 @@ const STORAGE_KEYS = {
     FOLDERS: 'polypost_folders',
     SETTINGS: 'polypost_settings',
 } as const;
-
-// Helper to check if chrome storage is available
-const isExtensionEnv = typeof chrome !== 'undefined' && !!chrome.storage;
 
 const readLocal = <T>(key: string, fallback: T): T => {
     if (typeof localStorage === 'undefined') {
@@ -46,8 +44,9 @@ export const storage = {
     // Posts
     // ============================================
     async getPosts(): Promise<Post[]> {
-        if (isExtensionEnv) {
-            const result = await chrome.storage.local.get(STORAGE_KEYS.POSTS);
+        const webext = getWebExt();
+        if (webext?.storage?.local) {
+            const result = await webext.storage.local.get(STORAGE_KEYS.POSTS);
             return result[STORAGE_KEYS.POSTS] || [];
         }
 
@@ -55,8 +54,9 @@ export const storage = {
     },
 
     async savePosts(posts: Post[]): Promise<void> {
-        if (isExtensionEnv) {
-            await chrome.storage.local.set({ [STORAGE_KEYS.POSTS]: posts });
+        const webext = getWebExt();
+        if (webext?.storage?.local) {
+            await webext.storage.local.set({ [STORAGE_KEYS.POSTS]: posts });
             return;
         }
 
@@ -92,8 +92,9 @@ export const storage = {
     // Variants
     // ============================================
     async getVariants(): Promise<Variant[]> {
-        if (isExtensionEnv) {
-            const result = await chrome.storage.local.get(STORAGE_KEYS.VARIANTS);
+        const webext = getWebExt();
+        if (webext?.storage?.local) {
+            const result = await webext.storage.local.get(STORAGE_KEYS.VARIANTS);
             return result[STORAGE_KEYS.VARIANTS] || [];
         }
 
@@ -101,8 +102,9 @@ export const storage = {
     },
 
     async saveVariants(variants: Variant[]): Promise<void> {
-        if (isExtensionEnv) {
-            await chrome.storage.local.set({ [STORAGE_KEYS.VARIANTS]: variants });
+        const webext = getWebExt();
+        if (webext?.storage?.local) {
+            await webext.storage.local.set({ [STORAGE_KEYS.VARIANTS]: variants });
             return;
         }
 
@@ -139,8 +141,9 @@ export const storage = {
     // Folders
     // ============================================
     async getFolders(): Promise<Folder[]> {
-        if (isExtensionEnv) {
-            const result = await chrome.storage.local.get(STORAGE_KEYS.FOLDERS);
+        const webext = getWebExt();
+        if (webext?.storage?.local) {
+            const result = await webext.storage.local.get(STORAGE_KEYS.FOLDERS);
             return result[STORAGE_KEYS.FOLDERS] || [];
         }
 
@@ -148,8 +151,9 @@ export const storage = {
     },
 
     async saveFolders(folders: Folder[]): Promise<void> {
-        if (isExtensionEnv) {
-            await chrome.storage.local.set({ [STORAGE_KEYS.FOLDERS]: folders });
+        const webext = getWebExt();
+        if (webext?.storage?.local) {
+            await webext.storage.local.set({ [STORAGE_KEYS.FOLDERS]: folders });
             return;
         }
 
@@ -187,8 +191,10 @@ export const storage = {
     // Settings
     // ============================================
     async getSettings(): Promise<Settings> {
-        if (isExtensionEnv) {
-            const result = await chrome.storage.sync.get(STORAGE_KEYS.SETTINGS);
+        const webext = getWebExt();
+        const settingsStorage = webext?.storage?.sync || webext?.storage?.local;
+        if (settingsStorage) {
+            const result = await settingsStorage.get(STORAGE_KEYS.SETTINGS);
             return (
                 result[STORAGE_KEYS.SETTINGS] || {
                     openaiApiKey: '',
@@ -222,8 +228,10 @@ export const storage = {
     },
 
     async saveSettings(settings: Settings): Promise<void> {
-        if (isExtensionEnv) {
-            await chrome.storage.sync.set({ [STORAGE_KEYS.SETTINGS]: settings });
+        const webext = getWebExt();
+        const settingsStorage = webext?.storage?.sync || webext?.storage?.local;
+        if (settingsStorage) {
+            await settingsStorage.set({ [STORAGE_KEYS.SETTINGS]: settings });
             return;
         }
         localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));

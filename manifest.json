@@ -23,6 +23,25 @@
         "service_worker": "src/background/index.ts",
         "type": "module"
     },
-    "permissions": ["storage", "sidePanel", "tabs", "scripting"],
+    "permissions": ["storage", "sidePanel", "tabs"],
+    "host_permissions": [
+        "https://api.openai.com/*",
+        "https://x.com/*",
+        "https://*.x.com/*",
+        "https://twitter.com/*",
+        "https://*.twitter.com/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://x.com/*",
+                "https://*.x.com/*",
+                "https://twitter.com/*",
+                "https://*.twitter.com/*"
+            ],
+            "js": ["src/content/followersFilter.ts"],
+            "run_at": "document_idle"
+        }
+    ],
     "optional_host_permissions": ["https://*/*", "http://*/*"]
 }

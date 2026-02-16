@@ -1,3 +1,5 @@
+import { getWebExt } from '@/services/webext';
+
 type ProxyFetchRequest = {
     type: 'proxyFetch';
     url: string;
@@ -73,15 +75,26 @@ const readBody = async (
 };
 
 const sendProxyFetch = (payload: ProxyFetchRequest): Promise<ProxyFetchResponse> => {
-    return new Promise((resolve, reject) => {
-        if (typeof chrome === 'undefined' || !chrome.runtime?.sendMessage) {
-            reject(new Error('Proxy fetch is unavailable outside the extension runtime.'));
-            return;
-        }
+    const webext = getWebExt();
+    if (!webext?.runtime?.sendMessage) {
+        return Promise.reject(
+            new Error('Proxy fetch is unavailable outside the extension runtime.'),
+        );
+    }
 
-        chrome.runtime.sendMessage(payload, (response) => {
-            if (chrome.runtime.lastError) {
-                reject(new Error(chrome.runtime.lastError.message));
+    try {
+        const maybePromise = webext.runtime.sendMessage(payload as any) as any;
+        if (maybePromise && typeof maybePromise.then === 'function') {
+            return maybePromise as Promise<ProxyFetchResponse>;
+        }
+    } catch (error) {
+        return Promise.reject(error);
+    }
+
+    return new Promise((resolve, reject) => {
+        webext.runtime.sendMessage(payload as any, (response) => {
+            if (webext.runtime.lastError) {
+                reject(new Error(webext.runtime.lastError.message));
                 return;
             }
 
@@ -91,7 +104,8 @@ const sendProxyFetch = (payload: ProxyFetchRequest): Promise<ProxyFetchResponse>
 };
 
 export const proxyFetch: typeof fetch = async (input, init) => {
-    if (typeof chrome === 'undefined' || !chrome.runtime?.sendMessage) {
+    const webext = getWebExt();
+    if (!webext?.runtime?.sendMessage) {
         return fetch(input, init);
     }
 
