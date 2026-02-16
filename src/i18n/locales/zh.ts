@@ -51,7 +51,7 @@ export const zh = {
     'editor.api_key_missing_openai': '请在设置中配置 LLM API 密钥',
     'editor.api_key_missing_custom': '请在设置中配置自定义 API 设置',
     'editor.permission.invalid_url': 'API 接口地址无效，请使用完整的 http:// 或 https:// URL。',
-    'editor.permission.denied': '需要访问权限：{0}，请在弹窗中允许。',
+    'editor.permission.denied': '需要访问权限：{0}，请在浏览器扩展权限设置中允许。',
     'editor.permission.not_allowed': '该域名不在本版本的白名单中：{0}',
     'editor.variants.empty': '暂无变体。',
     'editor.variants.empty_desc': '使用 AI 润色或翻译生成变体。',

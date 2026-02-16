@@ -52,7 +52,7 @@ export const en = {
     'editor.permission.invalid_url':
         'Invalid API Base URL. Please use a full http:// or https:// URL.',
     'editor.permission.denied':
-        'Permission required to access {0}. Please allow it in the browser prompt.',
+        'Permission required to access {0}. Please allow it in your browser extension permissions.',
     'editor.permission.not_allowed': 'This domain is not in the allowlist for this build: {0}',
     'editor.variants.empty': 'No variants yet.',
     'editor.variants.empty_desc': 'Use AI Polish or Translate to generate variants.',

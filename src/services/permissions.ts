@@ -1,5 +1,14 @@
 import { getWebExt } from '@/services/webext';
 
+export const REQUIRED_HOST_ORIGINS = [
+    'https://api.openai.com/*',
+    'https://x.com/*',
+    'https://*.x.com/*',
+    'https://twitter.com/*',
+    'https://*.twitter.com/*',
+    // Keep in sync with manifest.json host_permissions.
+];
+
 export const OPTIONAL_HOST_ORIGINS = [
     'https://*/*',
     'http://*/*',
@@ -47,6 +56,14 @@ export const ensureHostPermission = async (
         return { granted: false, reason: 'invalid_url' };
     }
 
+    const isRequiredByManifest = REQUIRED_HOST_ORIGINS.some((pattern) =>
+        matchesOriginPattern(origin, pattern),
+    );
+    if (isRequiredByManifest) {
+        // Required host permissions are granted at install time and do not need runtime prompts.
+        return { granted: true, origin };
+    }
+
     const allowAll = OPTIONAL_HOST_ORIGINS.includes('<all_urls>');
     const isAllowed = allowAll
         ? true
@@ -57,17 +74,24 @@ export const ensureHostPermission = async (
     }
 
     const webext = getWebExt();
-    if (!webext?.permissions) {
+    const permissionsApi = webext?.permissions as
+        | {
+              contains?: (options: { origins: string[] }) => Promise<boolean>;
+              request?: (options: { origins: string[] }) => Promise<boolean>;
+          }
+        | undefined;
+
+    if (!permissionsApi?.contains || !permissionsApi?.request) {
         return { granted: true, origin };
     }
 
-    const alreadyGranted = await webext.permissions.contains({ origins: [origin] });
+    const alreadyGranted = await permissionsApi.contains({ origins: [origin] });
     if (alreadyGranted) {
         return { granted: true, origin };
     }
 
     try {
-        const granted = await webext.permissions.request({ origins: [origin] });
+        const granted = await permissionsApi.request({ origins: [origin] });
         return granted ? { granted: true, origin } : { granted: false, origin, reason: 'denied' };
     } catch {
         return { granted: false, origin, reason: 'denied' };
